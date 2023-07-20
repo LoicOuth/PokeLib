@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { IUserRepository } from 'src/application/common/ports/user-repository.port';
-import { User } from 'src/domain/entities/user.entity';
 import { PrismaService } from '../adapter/prisma.service';
 import { IPagination } from 'src/application/common/interfaces/pagination.interface';
 import { Pagination } from '../pagination';
 import { GoogleUserModel } from 'src/application/common/models/google-user.model';
 import * as bcrypt from 'bcrypt';
+import { User } from 'src/domain/entities/user.entity';
 
 @Injectable()
 export class UserRepository implements IUserRepository {

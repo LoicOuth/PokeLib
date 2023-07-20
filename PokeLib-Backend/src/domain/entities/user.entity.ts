@@ -1,7 +1,8 @@
 import { Role } from '../constants/role.constant';
+import { BaseEntity } from './common/base.entity';
+import { Team } from './team.entity';
 
-export class User {
-  id: number;
+export class User extends BaseEntity {
   email: string;
   pseudo: string;
   password: string;
@@ -9,4 +10,6 @@ export class User {
   role: Role;
   google_uuid: string;
   registered_at: Date;
+
+  teams?: Team[];
 }

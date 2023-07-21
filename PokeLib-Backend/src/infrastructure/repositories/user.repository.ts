@@ -30,34 +30,23 @@ export class UserRepository implements IUserRepository {
   }
 
   async createOrUpdateFromGoogle(googleUser: GoogleUserModel): Promise<User> {
-    let user = await this.prismaClient.user.findFirst({
-      where: { google_uuid: googleUser.id },
-    });
-
     const data = {
       avatar: googleUser.picture,
       email: googleUser.email,
       pseudo: googleUser.name,
     };
 
-    if (user) {
-      user = await this.prismaClient.user.update({
-        where: {
-          id: user.id,
-        },
-        data,
-      });
-    } else {
-      user = await this.prismaClient.user.create({
-        data: {
-          ...data,
-          registered_at: new Date(),
-          google_uuid: googleUser.id,
-        },
-      });
-    }
-
-    return user;
+    return await this.prismaClient.user.upsert({
+      where: {
+        google_uuid: googleUser.id,
+      },
+      update: data,
+      create: {
+        ...data,
+        registered_at: new Date(),
+        google_uuid: googleUser.id,
+      },
+    });
   }
 
   async createUser(email: string, pseudo: string, password: string): Promise<User> {

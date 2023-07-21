@@ -1,5 +1,5 @@
 import { Ability } from './ability.entity';
-import { PokeApiEntity } from './common/pokeapi.entity';
+import { PokeapiNamedEntity } from './common/pokeapi-named.entity';
 import { LocationArea } from './location-area.entity';
 import { Move } from './move.entity';
 import { evolutions_chain_pokemons } from './pivots/evolutions-chain-pokemons.pivot';
@@ -9,8 +9,7 @@ import { pokemons_teams } from './pivots/pokemons-teams.pivot';
 import { Type } from './type.entity';
 import { Version } from './version.entity';
 
-export class Pokemon extends PokeApiEntity {
-  name: string;
+export class Pokemon extends PokeapiNamedEntity {
   description: string;
   base_experience: number;
   height: number;

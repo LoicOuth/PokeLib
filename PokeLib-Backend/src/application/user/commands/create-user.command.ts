@@ -18,7 +18,7 @@ export class CreateUserCommand {
 }
 
 @CommandHandler(CreateUserCommand)
-export class CreateUserCommandHandler implements ICommandHandler<CreateUserCommand> {
+export class CreateUserCommandHandler implements ICommandHandler<CreateUserCommand, void> {
   constructor(private readonly userRepository: IUserRepository) {}
 
   async execute(command: CreateUserCommand): Promise<void> {

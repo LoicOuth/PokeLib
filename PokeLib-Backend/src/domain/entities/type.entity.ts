@@ -1,10 +1,9 @@
-import { PokeApiEntity } from './common/pokeapi.entity';
+import { PokeapiNamedEntity } from './common/pokeapi-named.entity';
 import { Move } from './move.entity';
 import { pokemons_past_types } from './pivots/pokemons-past-types.pivot';
 import { Pokemon } from './pokemon.entity';
 
-export class Type extends PokeApiEntity {
-  name: string;
+export class Type extends PokeapiNamedEntity {
   color: string;
 
   moves?: Move[];

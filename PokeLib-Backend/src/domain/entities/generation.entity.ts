@@ -1,9 +1,8 @@
 import { Region } from '@prisma/client';
-import { PokeApiEntity } from './common/pokeapi.entity';
 import { VersionGroup } from './version-group.entity';
+import { PokeapiNamedEntity } from './common/pokeapi-named.entity';
 
-export class Generation extends PokeApiEntity {
-  name: string;
+export class Generation extends PokeapiNamedEntity {
   region_id: bigint;
 
   region?: Region;

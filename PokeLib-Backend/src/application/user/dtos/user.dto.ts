@@ -1,7 +1,7 @@
 import { User } from 'src/domain/entities/user.entity';
 
 export class UserDto {
-  id: number;
+  id: bigint;
   email: string;
   pseudo: string;
   avatar: string;
@@ -9,7 +9,7 @@ export class UserDto {
   registered_at: Date;
 
   constructor(
-    id: number,
+    id: bigint,
     email: string,
     pseudo: string,
     avatar: string,

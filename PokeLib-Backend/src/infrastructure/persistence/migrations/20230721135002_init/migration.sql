@@ -1,21 +1,27 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE `User` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `email` VARCHAR(191) NOT NULL,
+    `pseudo` VARCHAR(191) NOT NULL,
+    `password` VARCHAR(191) NULL,
+    `avatar` VARCHAR(191) NOT NULL,
+    `role` ENUM('ADMIN', 'USER') NOT NULL DEFAULT 'USER',
+    `google_uuid` VARCHAR(191) NULL,
+    `registered_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
-  - The primary key for the `user` table will be changed. If it partially fails, the table could be left without primary key constraint.
-
-*/
--- AlterTable
-ALTER TABLE `user` DROP PRIMARY KEY,
-    MODIFY `id` BIGINT NOT NULL AUTO_INCREMENT,
-    ADD PRIMARY KEY (`id`);
+    UNIQUE INDEX `User_email_key`(`email`),
+    UNIQUE INDEX `User_pseudo_key`(`pseudo`),
+    UNIQUE INDEX `User_google_uuid_key`(`google_uuid`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Team` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `is_public` BOOLEAN NOT NULL DEFAULT false,
-    `created_at` DATETIME(3) NOT NULL,
-    `updated_at` DATETIME(3) NOT NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `user_id` BIGINT NOT NULL,
 
     PRIMARY KEY (`id`)
@@ -26,8 +32,10 @@ CREATE TABLE `Region` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `poke_api_id` BIGINT NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `display_name` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `Region_poke_api_id_key`(`poke_api_id`),
+    UNIQUE INDEX `Region_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -36,9 +44,11 @@ CREATE TABLE `Location` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `poke_api_id` BIGINT NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `region_id` BIGINT NOT NULL,
+    `display_name` VARCHAR(191) NOT NULL,
+    `region_id` BIGINT NULL,
 
     UNIQUE INDEX `Location_poke_api_id_key`(`poke_api_id`),
+    UNIQUE INDEX `Location_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -47,9 +57,11 @@ CREATE TABLE `LocationArea` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `poke_api_id` BIGINT NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `display_name` VARCHAR(191) NOT NULL,
     `location_id` BIGINT NOT NULL,
 
     UNIQUE INDEX `LocationArea_poke_api_id_key`(`poke_api_id`),
+    UNIQUE INDEX `LocationArea_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -58,18 +70,22 @@ CREATE TABLE `Generation` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `poke_api_id` BIGINT NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `display_name` VARCHAR(191) NOT NULL,
     `region_id` BIGINT NOT NULL,
 
     UNIQUE INDEX `Generation_poke_api_id_key`(`poke_api_id`),
+    UNIQUE INDEX `Generation_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `VersionGroup` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(191) NOT NULL,
     `poke_api_id` BIGINT NOT NULL,
     `generation_id` BIGINT NOT NULL,
 
+    UNIQUE INDEX `VersionGroup_name_key`(`name`),
     UNIQUE INDEX `VersionGroup_poke_api_id_key`(`poke_api_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -79,9 +95,11 @@ CREATE TABLE `Version` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `poke_api_id` BIGINT NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `display_name` VARCHAR(191) NOT NULL,
     `version_group_id` BIGINT NOT NULL,
 
     UNIQUE INDEX `Version_poke_api_id_key`(`poke_api_id`),
+    UNIQUE INDEX `Version_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -90,9 +108,11 @@ CREATE TABLE `Type` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `poke_api_id` BIGINT NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `display_name` VARCHAR(191) NOT NULL,
     `color` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `Type_poke_api_id_key`(`poke_api_id`),
+    UNIQUE INDEX `Type_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -101,15 +121,17 @@ CREATE TABLE `Move` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `poke_api_id` BIGINT NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `accuracy` INTEGER NOT NULL,
-    `power` INTEGER NOT NULL,
-    `pp` INTEGER NOT NULL,
-    `priority` INTEGER NOT NULL,
+    `display_name` VARCHAR(191) NOT NULL,
+    `accuracy` INTEGER NULL,
+    `power` INTEGER NULL,
+    `pp` INTEGER NULL,
+    `priority` INTEGER NULL,
     `damage_class` VARCHAR(191) NOT NULL,
     `damage_description` VARCHAR(191) NOT NULL,
     `type_id` BIGINT NOT NULL,
 
     UNIQUE INDEX `Move_poke_api_id_key`(`poke_api_id`),
+    UNIQUE INDEX `Move_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -118,10 +140,11 @@ CREATE TABLE `Ability` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `poke_api_id` BIGINT NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `effect_entries` VARCHAR(191) NOT NULL,
-    `effect_change` VARCHAR(191) NOT NULL,
+    `display_name` VARCHAR(191) NOT NULL,
+    `effect_entries` TEXT NOT NULL,
 
     UNIQUE INDEX `Ability_poke_api_id_key`(`poke_api_id`),
+    UNIQUE INDEX `Ability_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -139,8 +162,10 @@ CREATE TABLE `EvolutionTrigger` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `poke_api_id` BIGINT NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `display_name` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `EvolutionTrigger_poke_api_id_key`(`poke_api_id`),
+    UNIQUE INDEX `EvolutionTrigger_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -149,8 +174,10 @@ CREATE TABLE `Stat` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `poke_api_id` BIGINT NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `display_name` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `Stat_poke_api_id_key`(`poke_api_id`),
+    UNIQUE INDEX `Stat_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -159,28 +186,30 @@ CREATE TABLE `Pokemon` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
     `poke_api_id` BIGINT NOT NULL,
     `name` VARCHAR(191) NOT NULL,
-    `description` VARCHAR(191) NOT NULL,
-    `base_experience` INTEGER NOT NULL,
+    `display_name` VARCHAR(191) NOT NULL,
+    `description` TEXT NOT NULL,
+    `base_experience` INTEGER NULL,
     `height` INTEGER NOT NULL,
     `weight` INTEGER NOT NULL,
     `pokedex_order` INTEGER NOT NULL,
     `is_legendary` BOOLEAN NOT NULL DEFAULT false,
     `is_mythical` BOOLEAN NOT NULL DEFAULT false,
     `has_gender_difference` BOOLEAN NOT NULL DEFAULT false,
-    `atwork` VARCHAR(191) NOT NULL,
-    `atwork_shiny` VARCHAR(191) NOT NULL,
-    `sprite_back_default` VARCHAR(191) NOT NULL,
-    `sprite_back_default_shiny` VARCHAR(191) NOT NULL,
+    `atwork` VARCHAR(191) NULL,
+    `atwork_shiny` VARCHAR(191) NULL,
+    `sprite_back_default` VARCHAR(191) NULL,
+    `sprite_back_default_shiny` VARCHAR(191) NULL,
     `sprite_back_female` VARCHAR(191) NULL,
     `sprite_back_female_shiny` VARCHAR(191) NULL,
-    `sprite_front_default` VARCHAR(191) NOT NULL,
-    `sprite_front_default_shiny` VARCHAR(191) NOT NULL,
+    `sprite_front_default` VARCHAR(191) NULL,
+    `sprite_front_default_shiny` VARCHAR(191) NULL,
     `sprite_front_female` VARCHAR(191) NULL,
     `sprite_front_female_shiny` VARCHAR(191) NULL,
     `first_type_id` BIGINT NOT NULL,
-    `second_type_id` BIGINT NOT NULL,
+    `second_type_id` BIGINT NULL,
 
     UNIQUE INDEX `Pokemon_poke_api_id_key`(`poke_api_id`),
+    UNIQUE INDEX `Pokemon_name_key`(`name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -261,20 +290,11 @@ CREATE TABLE `_PokemonToVersion` (
     INDEX `_PokemonToVersion_B_index`(`B`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- CreateTable
-CREATE TABLE `_PokemonToStat` (
-    `A` BIGINT NOT NULL,
-    `B` BIGINT NOT NULL,
-
-    UNIQUE INDEX `_PokemonToStat_AB_unique`(`A`, `B`),
-    INDEX `_PokemonToStat_B_index`(`B`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
 -- AddForeignKey
 ALTER TABLE `Team` ADD CONSTRAINT `Team_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Location` ADD CONSTRAINT `Location_region_id_fkey` FOREIGN KEY (`region_id`) REFERENCES `Region`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Location` ADD CONSTRAINT `Location_region_id_fkey` FOREIGN KEY (`region_id`) REFERENCES `Region`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `LocationArea` ADD CONSTRAINT `LocationArea_location_id_fkey` FOREIGN KEY (`location_id`) REFERENCES `Location`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -295,7 +315,7 @@ ALTER TABLE `Move` ADD CONSTRAINT `Move_type_id_fkey` FOREIGN KEY (`type_id`) RE
 ALTER TABLE `Pokemon` ADD CONSTRAINT `Pokemon_first_type_id_fkey` FOREIGN KEY (`first_type_id`) REFERENCES `Type`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Pokemon` ADD CONSTRAINT `Pokemon_second_type_id_fkey` FOREIGN KEY (`second_type_id`) REFERENCES `Type`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Pokemon` ADD CONSTRAINT `Pokemon_second_type_id_fkey` FOREIGN KEY (`second_type_id`) REFERENCES `Type`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `pokemons_stats` ADD CONSTRAINT `pokemons_stats_pokemon_id_fkey` FOREIGN KEY (`pokemon_id`) REFERENCES `Pokemon`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -368,9 +388,3 @@ ALTER TABLE `_PokemonToVersion` ADD CONSTRAINT `_PokemonToVersion_A_fkey` FOREIG
 
 -- AddForeignKey
 ALTER TABLE `_PokemonToVersion` ADD CONSTRAINT `_PokemonToVersion_B_fkey` FOREIGN KEY (`B`) REFERENCES `Version`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_PokemonToStat` ADD CONSTRAINT `_PokemonToStat_A_fkey` FOREIGN KEY (`A`) REFERENCES `Pokemon`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `_PokemonToStat` ADD CONSTRAINT `_PokemonToStat_B_fkey` FOREIGN KEY (`B`) REFERENCES `Stat`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

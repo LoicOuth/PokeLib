@@ -26,5 +26,6 @@ export class RegionRepository implements IRegionRepository {
     });
   };
 
-  getFromName = (name: string): Promise<Region> => this.prismaClient.region.findFirst({ where: { name } });
+  getFromName = async (name: string): Promise<Region> =>
+    await this.prismaClient.region.findUniqueOrThrow({ where: { name } });
 }

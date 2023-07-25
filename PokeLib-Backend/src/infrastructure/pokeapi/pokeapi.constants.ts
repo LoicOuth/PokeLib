@@ -21,7 +21,7 @@ export const colorFromType = {
   fairy: '#D685AD',
 };
 
-export const getNameInEnglish = <T extends IPokeapiBaseEntity>(entity: T): string => {
+export const getNameInEnglish = (entity: IPokeapiBaseEntity): string => {
   const englishName = entity.names.find((el) => el.language.name === 'en');
   return englishName ? englishName.name : entity.name;
 };

@@ -34,5 +34,6 @@ export class VersionRepository implements IVersionRepository {
     });
   };
 
-  getFromName = (name: string): Promise<Version> => this.prismaClient.version.findFirst({ where: { name } });
+  getFromName = async (name: string): Promise<Version> =>
+    await this.prismaClient.version.findUniqueOrThrow({ where: { name } });
 }

@@ -4,6 +4,7 @@ import { IPokemonRepository } from 'src/application/common/ports/pokemon-reposit
 import { IPokeapiPokemon } from 'src/application/common/interfaces/pokeapi/pokemon.interface';
 import { ITypeRepository } from 'src/application/common/ports/type-repository.port';
 import { getNameInEnglish } from '../pokeapi/pokeapi.constants';
+import { Pokemon } from 'src/domain/entities/pokemon.entity';
 
 @Injectable()
 export class PokemonRepository implements IPokemonRepository {
@@ -21,6 +22,7 @@ export class PokemonRepository implements IPokemonRepository {
       name: pokemon.name,
       display_name: getNameInEnglish(pokemon),
       description: description ? description.flavor_text : '',
+      is_default: pokemon.is_default,
       base_experience: pokemon.base_experience,
       height: pokemon.height,
       weight: pokemon.weight,
@@ -40,6 +42,18 @@ export class PokemonRepository implements IPokemonRepository {
       sprite_front_female_shiny: pokemon.sprites.front_shiny_female,
       first_type_id: type1.id,
       second_type_id: type2 ? type2.id : type2,
+      moves: {
+        connect: pokemon.moves.map((el) => ({ name: el.move.name })),
+      },
+      abilities: {
+        connect: pokemon.abilities.map((el) => ({ name: el.ability.name })),
+      },
+      versions: {
+        connect: pokemon.game_indices.map((el) => ({ name: el.version.name })),
+      },
+      locations_areas: {
+        connect: pokemon.location_areas.map((el) => ({ name: el.location_area.name })),
+      },
     };
 
     await this.prismaClient.pokemon.upsert({
@@ -50,7 +64,30 @@ export class PokemonRepository implements IPokemonRepository {
       create: {
         poke_api_id: pokemon.id,
         ...data,
+        pokemons_stats: {
+          create: pokemon.stats.map((el) => ({
+            base_stat: el.base_stat,
+            stat: {
+              connect: {
+                name: el.stat.name,
+              },
+            },
+          })),
+        },
       },
     });
   };
+
+  getFromName = async (name: string): Promise<Pokemon> =>
+    await this.prismaClient.pokemon.findUniqueOrThrow({ where: { name } });
+
+  updateEvolutionChainAndGet = (name: string, chainId: any): Promise<Pokemon> =>
+    this.prismaClient.pokemon.update({
+      where: {
+        name,
+      },
+      data: {
+        evolution_chain_id: chainId,
+      },
+    });
 }

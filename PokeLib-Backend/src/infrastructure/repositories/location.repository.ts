@@ -32,5 +32,6 @@ export class LocationRepository implements ILocationRepository {
     });
   };
 
-  getFromName = (name: string): Promise<Location> => this.prismaClient.location.findFirst({ where: { name } });
+  getFromName = async (name: string): Promise<Location> =>
+    await this.prismaClient.location.findUniqueOrThrow({ where: { name } });
 }

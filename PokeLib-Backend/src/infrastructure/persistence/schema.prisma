@@ -147,6 +147,7 @@ model EvolutionChain {
    id                        BigInt                      @id @default(autoincrement())
    poke_api_id               BigInt                      @unique
    evolutions_chain_pokemons evolutions_chain_pokemons[]
+   pokemons                  Pokemon[]
 }
 
 model EvolutionTrigger {
@@ -171,6 +172,7 @@ model Pokemon {
    name                       String                      @unique
    display_name               String
    description                String                      @db.Text
+   is_default                 Boolean                     @default(false)
    base_experience            Int?
    height                     Int
    weight                     Int
@@ -200,10 +202,12 @@ model Pokemon {
    evolve_from                evolutions_chain_pokemons[] @relation(name: "pokemon_from")
    evolve_to                  evolutions_chain_pokemons[] @relation(name: "pokemon_to")
    pokemons_teams             pokemons_teams[]
+   evolution_chain            EvolutionChain?             @relation(fields: [evolution_chain_id], references: [id], onUpdate: Cascade)
 
    //Foreign key
-   first_type_id  BigInt
-   second_type_id BigInt?
+   first_type_id      BigInt
+   second_type_id     BigInt?
+   evolution_chain_id BigInt?
 }
 
 // pivots

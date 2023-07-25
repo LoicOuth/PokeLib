@@ -1,14 +1,14 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 interface INamedAPIResourceList<T> {
   count: number;
   results: T[];
 }
-
 @Injectable()
 export class PokeapiClient {
   private readonly URL = 'https://pokeapi.co/api/v2/';
+  private logger = new Logger(PokeapiClient.name);
 
   constructor(private readonly http: HttpService) {}
 
@@ -28,6 +28,10 @@ export class PokeapiClient {
 
       return [...lastItems, ...getCount.data.results];
     } catch (error) {
+      this.logger.error(
+        `Pokeapi API return error : ${error}, on request :  ${endpoint}, method : ${this.getList.name}`,
+      );
+
       throw new Error(`PokeApi API return error ${error}`);
     }
   };
@@ -38,6 +42,8 @@ export class PokeapiClient {
 
       return response.data;
     } catch (error) {
+      this.logger.error(`Pokeapi API return error : ${error}, on request :  ${fullUrl}, method : ${this.get.name}`);
+
       throw new Error(`PokeApi API return error ${error}`);
     }
   };

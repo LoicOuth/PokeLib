@@ -4,25 +4,17 @@ import { PokeapiClient } from './pokeapi-client.service';
 import { IAbilityRepository } from 'src/application/common/ports/ability-repository.port';
 import { IEvolutionTriggerRepository } from 'src/application/common/ports/evolution-trigger.port';
 import { IPokeapiBaseEntity } from 'src/application/common/interfaces/pokeapi/common/base-entity.interface';
-import { IPokeapiAbility } from 'src/application/common/interfaces/pokeapi/ability.interface';
 import { IEvolutionChainRepository } from 'src/application/common/ports/evolution-chain-repository.port';
 import { ITypeRepository } from 'src/application/common/ports/type-repository.port';
-import { IPokeapiType } from 'src/application/common/interfaces/pokeapi/type.interface';
 import { IMoveRepository } from 'src/application/common/ports/move-repository.port';
-import { IPokeapiMove } from 'src/application/common/interfaces/pokeapi/move.interface';
 import { IStatRepository } from 'src/application/common/ports/stat-repository.port';
 import { IRegionRepository } from 'src/application/common/ports/region-repository.port';
 import { ILocationRepository } from 'src/application/common/ports/location-repository.port';
-import { IPokeapiLocation } from 'src/application/common/interfaces/pokeapi/location.interface';
 import { ILocationAreaRepository } from 'src/application/common/ports/location-area-repository.port';
-import { IPokeapiLocationArea } from 'src/application/common/interfaces/pokeapi/location-area.interface';
-import { IPokeapiGeneration } from 'src/application/common/interfaces/pokeapi/generation.interface';
 import { IGenerationRepository } from 'src/application/common/ports/generation-repository.port';
 import { IVersionGroupRepository } from 'src/application/common/ports/version-group-repository.port';
-import { IPokeapiVersionGroup } from 'src/application/common/interfaces/pokeapi/version-group.interface';
 import { IVersionRepository } from 'src/application/common/ports/version-repository.port';
-import { IPokeapiVersion } from 'src/application/common/interfaces/pokeapi/version.interface';
-import { IPokeapiPokemon } from 'src/application/common/interfaces/pokeapi/pokemon.interface';
+import { ILocationAreaEncounters, IPokeapiPokemon } from 'src/application/common/interfaces/pokeapi/pokemon.interface';
 import { IPokemonRepository } from 'src/application/common/ports/pokemon-repository.port';
 
 @Injectable()
@@ -44,20 +36,29 @@ export class PokeapiData implements IPokeapiData {
     private readonly PR: IPokemonRepository,
   ) {}
 
+  private repositoryMap: Record<string, { endpoint: string; repository: (data: any) => Promise<void> }> = {
+    ability: { endpoint: 'ability', repository: this.AP.createOrUpdateFromPokeapi },
+    type: { endpoint: 'type', repository: this.TR.createOrUpdateFromPokeapi },
+    'evolution-trigger': { endpoint: 'evolution-trigger', repository: this.ETR.createOrUpdateFromPokeapi },
+    region: { endpoint: 'region', repository: this.RR.createOrUpdateFromPokeapi },
+    location: { endpoint: 'location', repository: this.LR.createOrUpdateFromPokeapi },
+    move: { endpoint: 'move', repository: this.MR.createOrUpdateFromPokeapi },
+    stat: { endpoint: 'stat', repository: this.SR.createOrUpdateFromPokeapi },
+    generation: { endpoint: 'generation', repository: this.GR.createOrUpdateFromPokeapi },
+    'version-group': { endpoint: 'version-group', repository: this.VGR.createOrUpdateFromPokeapi },
+    'location-area': { endpoint: 'location-area', repository: this.LAR.createOrUpdateFromPokeapi },
+    version: { endpoint: 'version', repository: this.VR.createOrUpdateFromPokeapi },
+    pokemon: { endpoint: 'pokemon', repository: this.PR.createOrUpdateFromPokeapi },
+    'evolution-chain': { endpoint: 'evolution-chain', repository: this.ECR.createFromPokeapi },
+  };
+
   setDataInDatabase = async (): Promise<void> => {
-    await this.execute<IPokeapiAbility>('ability', this.AP.createOrUpdateFromPokeapi);
-    await this.execute('evolution-trigger', this.ETR.createOrUpdateFromPokeapi);
-    await this.execute('evolution-chain', this.ECR.createFromPokeapi);
-    await this.execute<IPokeapiType>('type', this.TR.createOrUpdateFromPokeapi);
-    await this.execute<IPokeapiMove>('move', this.MR.createOrUpdateFromPokeapi);
-    await this.execute('stat', this.SR.createOrUpdateFromPokeapi);
-    await this.execute('region', this.RR.createOrUpdateFromPokeapi);
-    await this.execute<IPokeapiLocation>('location', this.LR.createOrUpdateFromPokeapi);
-    await this.execute<IPokeapiLocationArea>('location-area', this.LAR.createOrUpdateFromPokeapi);
-    await this.execute<IPokeapiGeneration>('generation', this.GR.createOrUpdateFromPokeapi);
-    await this.execute<IPokeapiVersionGroup>('version-group', this.VGR.createOrUpdateFromPokeapi);
-    await this.execute<IPokeapiVersion>('version', this.VR.createOrUpdateFromPokeapi);
-    await this.execute<IPokeapiPokemon>('pokemon', this.PR.createOrUpdateFromPokeapi, true);
+    for (const key in this.repositoryMap) {
+      const { endpoint, repository } = this.repositoryMap[key];
+      const isPokemon = key === 'pokemon';
+
+      await this.execute(endpoint, repository, isPokemon);
+    }
   };
 
   private execute = async <T extends IPokeapiBaseEntity>(
@@ -67,16 +68,31 @@ export class PokeapiData implements IPokeapiData {
   ): Promise<void> => {
     const data = await this.pokeapiClient.getList<{ url: string }>(endpoint);
 
-    data.forEach(async (el) => {
-      let entity = await this.pokeapiClient.get<T>(el.url);
-      if (isPokemon) {
-        entity = {
-          ...(await this.pokeapiClient.get<T>((entity as unknown as IPokeapiPokemon).species.url)),
-          ...entity,
-        };
-      }
+    const batchPromises = [];
+    const batchSize = 100; // Nombre d'éléments par paquet
 
-      await createOrUpdateFromPokeapi(entity);
-    });
+    for (let i = 0; i < data.length; i += batchSize) {
+      const batch = data.slice(i, i + batchSize).map((el) => this.pokeapiClient.get<T>(el.url));
+      batchPromises.push(Promise.all(batch));
+    }
+
+    // Parcourir chaque paquet et exécuter les appels asynchrones en parallèle
+    for (const batchPromise of batchPromises) {
+      const batchData: T[] = await batchPromise;
+      for (let entity of batchData) {
+        if (isPokemon) {
+          const species = await this.pokeapiClient.get<T>((entity as unknown as IPokeapiPokemon).species.url);
+
+          entity = {
+            location_areas: await this.pokeapiClient.get<ILocationAreaEncounters[]>(
+              (entity as unknown as IPokeapiPokemon).location_area_encounters,
+            ),
+            ...species,
+            ...entity,
+          };
+        }
+        await createOrUpdateFromPokeapi(entity);
+      }
+    }
   };
 }

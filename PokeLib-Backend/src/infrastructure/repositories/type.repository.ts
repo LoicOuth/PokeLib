@@ -29,5 +29,6 @@ export class TypeRepository implements ITypeRepository {
     });
   };
 
-  getFromName = async (name: string): Promise<Type> => this.prismaClient.type.findFirst({ where: { name } });
+  getFromName = async (name: string): Promise<Type> =>
+    await this.prismaClient.type.findUniqueOrThrow({ where: { name } });
 }

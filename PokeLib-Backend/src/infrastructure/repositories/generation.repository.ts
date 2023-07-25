@@ -31,5 +31,6 @@ export class GenerationRepository implements IGenerationRepository {
     });
   };
 
-  getFromName = (name: string): Promise<Generation> => this.prismaClient.generation.findFirst({ where: { name } });
+  getFromName = async (name: string): Promise<Generation> =>
+    await this.prismaClient.generation.findUniqueOrThrow({ where: { name } });
 }

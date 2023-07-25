@@ -3,6 +3,7 @@ import { PrismaService } from '../adapter/prisma.service';
 import { IEvolutionTriggerRepository } from 'src/application/common/ports/evolution-trigger.port';
 import { IPokeapiBaseEntity } from 'src/application/common/interfaces/pokeapi/common/base-entity.interface';
 import { getNameInEnglish } from '../pokeapi/pokeapi.constants';
+import { EvolutionTrigger } from 'src/domain/entities/evolution-trigger.entity';
 
 @Injectable()
 export class EvolutionTriggerRepository implements IEvolutionTriggerRepository {
@@ -25,4 +26,7 @@ export class EvolutionTriggerRepository implements IEvolutionTriggerRepository {
       },
     });
   };
+
+  getFromName = async (name: string): Promise<EvolutionTrigger> =>
+    await this.prismaClient.evolutionTrigger.findUniqueOrThrow({ where: { name } });
 }

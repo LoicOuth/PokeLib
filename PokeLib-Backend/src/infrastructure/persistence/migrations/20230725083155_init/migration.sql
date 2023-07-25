@@ -188,6 +188,7 @@ CREATE TABLE `Pokemon` (
     `name` VARCHAR(191) NOT NULL,
     `display_name` VARCHAR(191) NOT NULL,
     `description` TEXT NOT NULL,
+    `is_default` BOOLEAN NOT NULL DEFAULT false,
     `base_experience` INTEGER NULL,
     `height` INTEGER NOT NULL,
     `weight` INTEGER NOT NULL,
@@ -207,6 +208,7 @@ CREATE TABLE `Pokemon` (
     `sprite_front_female_shiny` VARCHAR(191) NULL,
     `first_type_id` BIGINT NOT NULL,
     `second_type_id` BIGINT NULL,
+    `evolution_chain_id` BIGINT NULL,
 
     UNIQUE INDEX `Pokemon_poke_api_id_key`(`poke_api_id`),
     UNIQUE INDEX `Pokemon_name_key`(`name`),
@@ -316,6 +318,9 @@ ALTER TABLE `Pokemon` ADD CONSTRAINT `Pokemon_first_type_id_fkey` FOREIGN KEY (`
 
 -- AddForeignKey
 ALTER TABLE `Pokemon` ADD CONSTRAINT `Pokemon_second_type_id_fkey` FOREIGN KEY (`second_type_id`) REFERENCES `Type`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Pokemon` ADD CONSTRAINT `Pokemon_evolution_chain_id_fkey` FOREIGN KEY (`evolution_chain_id`) REFERENCES `EvolutionChain`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `pokemons_stats` ADD CONSTRAINT `pokemons_stats_pokemon_id_fkey` FOREIGN KEY (`pokemon_id`) REFERENCES `Pokemon`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

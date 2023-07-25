@@ -1,9 +1,35 @@
 import { IPokeapiBaseEntity } from './common/base-entity.interface';
 
+export interface ILocationAreaEncounters {
+  location_area: {
+    name: string;
+  };
+}
+
+export interface IEvolutionChainDetail {
+  id: bigint;
+  chain: IEvolutionTo;
+}
+
+export interface IEvolutionTo {
+  species: {
+    name: string;
+  };
+  evolves_to: IEvolutionTo[];
+  evolution_details: {
+    trigger: {
+      name: string;
+    };
+  }[];
+}
+
 export interface IPokeapiPokemon extends IPokeapiBaseEntity {
   weight: number;
   height: number;
+  is_default: boolean;
   base_experience: number;
+  location_area_encounters: string;
+  location_areas: ILocationAreaEncounters[];
   species: { url: string };
   abilities: { ability: { name: string } }[];
   game_indices: { version: { name: string } }[];
@@ -32,4 +58,6 @@ export interface IPokeapiPokemon extends IPokeapiBaseEntity {
   has_gender_differences: boolean;
   pokedex_numbers: { entry_number: number; pokedex: { name: string } }[];
   flavor_text_entries: { flavor_text: string; language: { name: string } }[];
+  evolution_chain: { url: string };
+  evolution_chain_detail: IEvolutionChainDetail;
 }

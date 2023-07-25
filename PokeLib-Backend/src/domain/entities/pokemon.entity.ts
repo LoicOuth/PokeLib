@@ -1,5 +1,6 @@
 import { Ability } from './ability.entity';
 import { PokeapiNamedEntity } from './common/pokeapi-named.entity';
+import { EvolutionChain } from './evolution-chain.entity';
 import { LocationArea } from './location-area.entity';
 import { Move } from './move.entity';
 import { evolutions_chain_pokemons } from './pivots/evolutions-chain-pokemons.pivot';
@@ -11,6 +12,7 @@ import { Version } from './version.entity';
 
 export class Pokemon extends PokeapiNamedEntity {
   description: string;
+  is_default: boolean;
   base_experience: number;
   height: number;
   weight: number;
@@ -30,10 +32,12 @@ export class Pokemon extends PokeapiNamedEntity {
   sprite_front_female_shiny?: string;
   first_type_id: bigint;
   second_type_id: bigint;
+  evolution_chain_id: bigint;
 
   //relations
   first_type?: Type;
   second_type?: Type;
+  evolution_chain?: EvolutionChain;
   locations_area?: LocationArea[];
   versions?: Version[];
   abilities?: Ability[];

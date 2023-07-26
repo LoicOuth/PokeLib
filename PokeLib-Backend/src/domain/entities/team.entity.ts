@@ -1,3 +1,4 @@
+import { PokemonToTeam } from './pivots/pokemons-teams.pivot';
 import { User } from './user.entity';
 
 export class Team {
@@ -8,4 +9,5 @@ export class Team {
   user_id: bigint;
 
   user?: User;
+  pokemons_teams?: PokemonToTeam[];
 }

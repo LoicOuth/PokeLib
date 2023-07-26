@@ -1,13 +1,12 @@
-import { PokeapiNamedEntity } from './common/pokeapi-named.entity';
-import { Move } from './move.entity';
-import { pokemons_past_types } from './pivots/pokemons-past-types.pivot';
+import { BaseEntity } from './common/base.entity';
 import { Pokemon } from './pokemon.entity';
 
-export class Type extends PokeapiNamedEntity {
+export class Type extends BaseEntity {
+  poke_api_id: bigint;
+  name: string;
   color: string;
+  sprite: string;
 
-  moves?: Move[];
-  pokemons_past_types?: pokemons_past_types[];
-  first_type_pokemons?: Pokemon[];
-  second_type_pokemons?: Pokemon[];
+  pokemons_first?: Pokemon[];
+  pokemons_second?: Pokemon[];
 }

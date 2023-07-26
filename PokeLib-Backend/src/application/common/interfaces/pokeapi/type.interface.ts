@@ -1,3 +1,3 @@
-import { IPokeapiBaseEntity } from './common/base-entity.interface';
-
-export type IPokeapiType = IPokeapiBaseEntity;
+export interface IPokeapiType {
+  id: bigint;
+}

@@ -1,5 +1,3 @@
-import { IPokeapiBaseEntity } from 'src/application/common/interfaces/pokeapi/common/base-entity.interface';
-
 export const colorFromType = {
   normal: '#A8A77A',
   fire: '#EE8130',
@@ -19,9 +17,4 @@ export const colorFromType = {
   dark: '#705746',
   steel: '#B7B7CE',
   fairy: '#D685AD',
-};
-
-export const getNameInEnglish = (entity: IPokeapiBaseEntity): string => {
-  const englishName = entity.names.find((el) => el.language.name === 'en');
-  return englishName ? englishName.name : entity.name;
 };

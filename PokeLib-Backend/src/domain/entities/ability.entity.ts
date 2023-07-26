@@ -1,10 +1,10 @@
-import { PokeapiNamedEntity } from './common/pokeapi-named.entity';
-import { pokemons_teams } from './pivots/pokemons-teams.pivot';
-import { Pokemon } from './pokemon.entity';
+import { BaseEntity } from './common/base.entity';
+import { AbilityToPokemon } from './pivots/abilities-pokemons.pivot';
+import { PokemonToTeam } from './pivots/pokemons-teams.pivot';
 
-export class Ability extends PokeapiNamedEntity {
-  effect_entries: string;
+export class Ability extends BaseEntity {
+  name: string;
 
-  pokemons?: Pokemon[];
-  pokemons_teams?: pokemons_teams[];
+  pokemons_teams?: PokemonToTeam[];
+  pokemons?: AbilityToPokemon[];
 }

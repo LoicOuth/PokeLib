@@ -21,249 +21,108 @@ model User {
    role          Role     @default(USER)
    google_uuid   String?  @unique
    registered_at DateTime @default(now())
-   Teams         Team[]
+
+   teams Team[]
 }
 
 model Team {
-   id             BigInt           @id @default(autoincrement())
-   name           String
-   is_public      Boolean          @default(false)
-   created_at     DateTime         @default(now())
-   updated_at     DateTime         @default(now()) @updatedAt
-   user           User             @relation(fields: [user_id], references: [id])
-   user_id        BigInt
-   pokemons_teams pokemons_teams[]
+   id         BigInt   @id @default(autoincrement())
+   name       String
+   is_public  Boolean  @default(false)
+   created_at DateTime @default(now())
+   updated_at DateTime @default(now()) @updatedAt
+   user_id    BigInt
+
+   user           User            @relation(fields: [user_id], references: [id])
+   pokemons_teams PokemonToTeam[]
 }
-
-// Location, Region
-
-model Region {
-   id           BigInt       @id @default(autoincrement())
-   poke_api_id  BigInt       @unique
-   name         String       @unique
-   display_name String
-   locations    Location[]
-   generations  Generation[]
-}
-
-model Location {
-   id              BigInt         @id @default(autoincrement())
-   poke_api_id     BigInt         @unique
-   name            String         @unique
-   display_name    String
-   region          Region?        @relation(fields: [region_id], references: [id])
-   region_id       BigInt?
-   locations_areas LocationArea[]
-}
-
-model LocationArea {
-   id           BigInt    @id @default(autoincrement())
-   poke_api_id  BigInt    @unique
-   name         String    @unique
-   display_name String
-   location     Location  @relation(fields: [location_id], references: [id])
-   location_id  BigInt
-   pokemons     Pokemon[]
-}
-
-// Game - Generation
-
-model Generation {
-   id                  BigInt                @id @default(autoincrement())
-   poke_api_id         BigInt                @unique
-   name                String                @unique
-   display_name        String
-   region              Region                @relation(fields: [region_id], references: [id])
-   region_id           BigInt
-   versions_groups     VersionGroup[]
-   pokemons_past_types pokemons_past_types[]
-}
-
-model VersionGroup {
-   id            BigInt     @id @default(autoincrement())
-   name          String     @unique
-   poke_api_id   BigInt     @unique
-   generation    Generation @relation(fields: [generation_id], references: [id])
-   generation_id BigInt
-   versions      Version[]
-}
-
-model Version {
-   id               BigInt       @id @default(autoincrement())
-   poke_api_id      BigInt       @unique
-   name             String       @unique
-   display_name     String
-   version_group    VersionGroup @relation(fields: [version_group_id], references: [id])
-   version_group_id BigInt
-   pokemons         Pokemon[]
-}
-
-// Pokemon
 
 model Type {
-   id                   BigInt                @id @default(autoincrement())
-   poke_api_id          BigInt                @unique
-   name                 String                @unique
-   display_name         String
-   color                String
-   moves                Move[]
-   pokemons_past_types  pokemons_past_types[]
-   first_type_pokemons  Pokemon[]             @relation(name: "first_type")
-   second_type_pokemons Pokemon[]             @relation(name: "second_type")
-}
+   id          BigInt @id @default(autoincrement())
+   poke_api_id BigInt @unique
+   name        String @unique
+   color       String
+   sprite      String
 
-model Move {
-   id                 BigInt    @id @default(autoincrement())
-   poke_api_id        BigInt    @unique
-   name               String    @unique
-   display_name       String
-   accuracy           Int?
-   power              Int?
-   pp                 Int?
-   priority           Int?
-   damage_class       String
-   damage_description String
-   type               Type      @relation(fields: [type_id], references: [id])
-   type_id            BigInt
-   pokemons           Pokemon[]
-
-   has_move_1 pokemons_teams[] @relation(name: "move_1")
-   has_move_2 pokemons_teams[] @relation(name: "move_2")
-   has_move_3 pokemons_teams[] @relation(name: "move_3")
-   has_move_4 pokemons_teams[] @relation(name: "move_4")
+   pokemons_first  Pokemon[] @relation(name: "first_type")
+   pokemons_second Pokemon[] @relation(name: "second_type")
 }
 
 model Ability {
-   id             BigInt           @id @default(autoincrement())
-   poke_api_id    BigInt           @unique
-   name           String           @unique
-   display_name   String
-   effect_entries String           @db.Text
-   pokemons       Pokemon[]
-   pokemons_teams pokemons_teams[]
+   id   BigInt @id @default(autoincrement())
+   name String @unique
+
+   pokemons_teams PokemonToTeam[]
+   pokemons       AbilityToPokemon[]
 }
 
-model EvolutionChain {
-   id                        BigInt                      @id @default(autoincrement())
-   poke_api_id               BigInt                      @unique
-   evolutions_chain_pokemons evolutions_chain_pokemons[]
-   pokemons                  Pokemon[]
+model Evolution {
+   id                   BigInt  @id @default(autoincrement())
+   is_next              Boolean
+   pokemon_id           BigInt
+   pokemon_evolution_id BigInt
+
+   pokemon           Pokemon @relation(name: "pokemon_evolution", fields: [pokemon_id], references: [id])
+   pokemon_evolution Pokemon @relation(name: "pokemon_evolution_1", fields: [pokemon_evolution_id], references: [id])
 }
 
-model EvolutionTrigger {
-   id                        BigInt                      @id @default(autoincrement())
-   poke_api_id               BigInt                      @unique
-   name                      String                      @unique
-   display_name              String
-   evolutions_chain_pokemons evolutions_chain_pokemons[]
-}
+model MegaEvolution {
+   id             BigInt @id @default(autoincrement())
+   orbe           String
+   sprite_regular String
+   sprite_shiny   String
+   pokemon_id     BigInt
 
-model Stat {
-   id             BigInt           @id @default(autoincrement())
-   poke_api_id    BigInt           @unique
-   name           String           @unique
-   display_name   String
-   pokemons_stats pokemons_stats[]
+   pokemon Pokemon @relation(fields: [pokemon_id], references: [id])
 }
 
 model Pokemon {
-   id                         BigInt                      @id @default(autoincrement())
-   poke_api_id                BigInt                      @unique
-   name                       String                      @unique
-   display_name               String
-   description                String                      @db.Text
-   is_default                 Boolean                     @default(false)
-   base_experience            Int?
-   height                     Int
-   weight                     Int
-   pokedex_order              Int
-   is_legendary               Boolean                     @default(false)
-   is_mythical                Boolean                     @default(false)
-   has_gender_difference      Boolean                     @default(false)
-   atwork                     String?
-   atwork_shiny               String?
-   sprite_back_default        String?
-   sprite_back_default_shiny  String?
-   sprite_back_female         String?
-   sprite_back_female_shiny   String?
-   sprite_front_default       String?
-   sprite_front_default_shiny String?
-   sprite_front_female        String?
-   sprite_front_female_shiny  String?
-   //Relations
-   first_type                 Type                        @relation(name: "first_type", fields: [first_type_id], references: [id])
-   second_type                Type?                       @relation(name: "second_type", fields: [second_type_id], references: [id])
-   locations_areas            LocationArea[]
-   versions                   Version[]
-   abilities                  Ability[]
-   moves                      Move[]
-   pokemons_stats             pokemons_stats[]
-   pokemons_past_types        pokemons_past_types[]
-   evolve_from                evolutions_chain_pokemons[] @relation(name: "pokemon_from")
-   evolve_to                  evolutions_chain_pokemons[] @relation(name: "pokemon_to")
-   pokemons_teams             pokemons_teams[]
-   evolution_chain            EvolutionChain?             @relation(fields: [evolution_chain_id], references: [id], onUpdate: Cascade)
+   id             BigInt  @id @default(autoincrement())
+   pokedex_order  Int     @unique
+   name           String  @unique
+   description    String  @db.Text
+   height         String
+   weight         String
+   generation     Int
+   sprite_regular String
+   sprite_shiny   String
+   sprite_gmax    String?
+   hp             Int
+   atk            Int
+   def            Int
+   spe_atk        Int
+   spe_def        Int
+   vit            Int
+   first_type_id  BigInt
+   second_type_id BigInt?
 
-   //Foreign key
-   first_type_id      BigInt
-   second_type_id     BigInt?
-   evolution_chain_id BigInt?
+   first_type        Type               @relation(name: "first_type", fields: [first_type_id], references: [id])
+   second_type       Type?              @relation(name: "second_type", fields: [second_type_id], references: [id])
+   pokemons_teams    PokemonToTeam[]
+   mega_evolutions   MegaEvolution[]
+   evolutions        Evolution[]        @relation(name: "pokemon_evolution")
+   evolutions_member Evolution[]        @relation(name: "pokemon_evolution_1")
+   abilities         AbilityToPokemon[]
 }
 
-// pivots
-model pokemons_stats {
-   pokemon   Pokemon @relation(fields: [pokemon_id], references: [id])
-   stat      Stat    @relation(fields: [stat_id], references: [id])
-   base_stat Int
-
+model PokemonToTeam {
+   ability_id BigInt
    pokemon_id BigInt
-   stat_id    BigInt
+   team_id    BigInt
 
-   @@id([pokemon_id, stat_id])
-}
-
-model pokemons_past_types {
-   pokemon    Pokemon    @relation(fields: [pokemon_id], references: [id])
-   type       Type       @relation(fields: [type_id], references: [id])
-   generation Generation @relation(fields: [generation_id], references: [id])
-
-   pokemon_id    BigInt
-   type_id       BigInt
-   generation_id BigInt
-
-   @@id([pokemon_id, type_id])
-}
-
-model evolutions_chain_pokemons {
-   evolution_chain   EvolutionChain   @relation(fields: [evolution_chain_id], references: [id])
-   evolution_trigger EvolutionTrigger @relation(fields: [evolution_trigger_id], references: [id])
-   pokemon_from      Pokemon          @relation(name: "pokemon_from", fields: [pokemon_from_id], references: [id])
-   pokemon_to        Pokemon          @relation(name: "pokemon_to", fields: [pokemon_to_id], references: [id])
-
-   evolution_chain_id   BigInt
-   evolution_trigger_id BigInt
-   pokemon_from_id      BigInt
-   pokemon_to_id        BigInt
-
-   @@id([evolution_trigger_id, evolution_chain_id, pokemon_from_id, pokemon_to_id])
-}
-
-model pokemons_teams {
    pokemon Pokemon @relation(fields: [pokemon_id], references: [id])
    team    Team    @relation(fields: [team_id], references: [id])
    ability Ability @relation(fields: [ability_id], references: [id])
-   move_1  Move    @relation(name: "move_1", fields: [move_1_id], references: [id])
-   move_2  Move    @relation(name: "move_2", fields: [move_2_id], references: [id])
-   move_3  Move    @relation(name: "move_3", fields: [move_3_id], references: [id])
-   move_4  Move    @relation(name: "move_4", fields: [move_4_id], references: [id])
-
-   pokemon_id BigInt
-   team_id    BigInt
-   ability_id BigInt
-   move_1_id  BigInt
-   move_2_id  BigInt
-   move_3_id  BigInt
-   move_4_id  BigInt
 
    @@id([pokemon_id, team_id])
+}
+
+model AbilityToPokemon {
+   ability_id BigInt
+   pokemon_id BigInt
+
+   ability Ability @relation(fields: [ability_id], references: [id])
+   pokemon Pokemon @relation(fields: [pokemon_id], references: [id])
+
+   @@id([pokemon_id, ability_id])
 }

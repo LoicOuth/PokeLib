@@ -1,15 +1,24 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, Logger } from '@nestjs/common';
+import { IPokeapiPokemon } from 'src/application/common/interfaces/pokeapi/pokemon.interface';
+import { IPokeapiType } from 'src/application/common/interfaces/pokeapi/type.interface';
 import { IPokeapiData } from 'src/application/common/ports/pokeapi-data.port';
+import { IPokemonRepository } from 'src/application/common/ports/pokemon-repository.port';
+import { ITypeRepository } from 'src/application/common/ports/type-repository.port';
 
 @Injectable()
 export class PokeapiData implements IPokeapiData {
   private logger = new Logger(PokeapiData.name);
 
-  constructor(private readonly http: HttpService) {}
+  constructor(
+    private readonly http: HttpService,
+    private readonly typeRepo: ITypeRepository,
+    private readonly pokemonRepo: IPokemonRepository,
+  ) {}
 
   setDataInDatabase = async (): Promise<void> => {
-    console.log('test');
+    await this.typeRepo.createOrUpdateFromPokeapi(await this.get<IPokeapiType[]>('types'));
+    await this.pokemonRepo.createOrUpdateFromPokeapi(await this.get<IPokeapiPokemon[]>('pokemon'));
   };
 
   private get = async <T>(endpoint: string): Promise<T> => {

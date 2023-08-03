@@ -13,7 +13,7 @@ export class Pokemon extends BaseEntity {
   weight: string;
   generation: number;
   sprite_regular: string;
-  sprite_shiny: string;
+  sprite_shiny?: string;
   sprite_gmax?: string;
   hp: number;
   atk: number;

@@ -1,5 +1,4 @@
-import { IPokeapiAbility } from '../interfaces/pokeapi/pokemon.interface';
-
+import { Ability } from 'src/domain/entities/ability.entity';
 export abstract class IAbilityRepository {
-  abstract createOrUpdateFromPokeapi(ability: IPokeapiAbility): Promise<void>;
+  abstract createOrUpdateFromPokeapi(name: string): Promise<Ability>;
 }

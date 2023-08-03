@@ -58,7 +58,7 @@ model Ability {
 
 model Evolution {
    id                   BigInt  @id @default(autoincrement())
-   is_next              Boolean
+   condition            String?
    pokemon_id           BigInt
    pokemon_evolution_id BigInt
 
@@ -85,7 +85,7 @@ model Pokemon {
    weight         String
    generation     Int
    sprite_regular String
-   sprite_shiny   String
+   sprite_shiny   String?
    sprite_gmax    String?
    hp             Int
    atk            Int
@@ -118,6 +118,7 @@ model PokemonToTeam {
 }
 
 model AbilityToPokemon {
+   is_hidden  Boolean
    ability_id BigInt
    pokemon_id BigInt
 

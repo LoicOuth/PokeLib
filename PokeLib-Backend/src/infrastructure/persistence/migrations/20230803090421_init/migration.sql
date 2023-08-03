@@ -52,7 +52,7 @@ CREATE TABLE `Ability` (
 -- CreateTable
 CREATE TABLE `Evolution` (
     `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `is_next` BOOLEAN NOT NULL,
+    `condition` VARCHAR(191) NULL,
     `pokemon_id` BIGINT NOT NULL,
     `pokemon_evolution_id` BIGINT NOT NULL,
 
@@ -80,7 +80,7 @@ CREATE TABLE `Pokemon` (
     `weight` VARCHAR(191) NOT NULL,
     `generation` INTEGER NOT NULL,
     `sprite_regular` VARCHAR(191) NOT NULL,
-    `sprite_shiny` VARCHAR(191) NOT NULL,
+    `sprite_shiny` VARCHAR(191) NULL,
     `sprite_gmax` VARCHAR(191) NULL,
     `hp` INTEGER NOT NULL,
     `atk` INTEGER NOT NULL,
@@ -107,6 +107,7 @@ CREATE TABLE `PokemonToTeam` (
 
 -- CreateTable
 CREATE TABLE `AbilityToPokemon` (
+    `is_hidden` BOOLEAN NOT NULL,
     `ability_id` BIGINT NOT NULL,
     `pokemon_id` BIGINT NOT NULL,
 

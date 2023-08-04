@@ -4,6 +4,7 @@ import { IPokeapiPokemon } from 'src/application/common/interfaces/pokeapi/pokem
 import { IAbilityRepository } from 'src/application/common/ports/ability-repository.port';
 import { ITypeRepository } from 'src/application/common/ports/type-repository.port';
 import { IPokemonRepository } from 'src/application/common/ports/pokemon-repository.port';
+import { Pokemon } from 'src/domain/entities/pokemon.entity';
 
 @Injectable()
 export class PokemonRepository implements IPokemonRepository {
@@ -13,6 +14,9 @@ export class PokemonRepository implements IPokemonRepository {
     private readonly typeRepo: ITypeRepository,
   ) {}
 
+  getAll = async (): Promise<Pokemon[]> => this.prismaClient.pokemon.findMany();
+
+  //Need refactor
   createOrUpdateFromPokeapi = async (pokemons: IPokeapiPokemon[]): Promise<void> => {
     for (const pokemon of pokemons) {
       if (pokemon.pokedexId === 0) continue;
@@ -72,9 +76,17 @@ export class PokemonRepository implements IPokemonRepository {
             create: data,
           });
         }
+    }
+  };
+
+  //Need refactor
+  createOrUpdateEvolutionFromPokeapi = async (pokemons: IPokeapiPokemon[]): Promise<void> => {
+    for (const pokemon of pokemons) {
+      const pokemonEntity = await this.prismaClient.pokemon.findUnique({
+        where: { pokedex_order: pokemon.pokedexId },
+      });
 
       if (pokemon.evolution) {
-        // Handle Mega Evolutions
         if (pokemon.evolution.mega && pokemon.evolution.mega.length > 0) {
           for (const megaEvolution of pokemon.evolution.mega) {
             const megaEvolutionData = {

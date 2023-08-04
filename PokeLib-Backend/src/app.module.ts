@@ -31,6 +31,10 @@ import { ITypeRepository } from './application/common/ports/type-repository.port
 import { TypeRepository } from './infrastructure/repositories/type.repository';
 import { IPokemonRepository } from './application/common/ports/pokemon-repository.port';
 import { PokemonRepository } from './infrastructure/repositories/pokemon.repository';
+import { GetAllPokemonQueryHandler } from './application/pokemon/queries/get-all-pokemon.query';
+import { PokemonController } from './presentation/controllers/pokemon.controller';
+import { TypeController } from './presentation/controllers/type.controller';
+import { GetAllTypeQueryHandler } from './application/type/queries/get-all-type.query';
 
 const handlers = [
   LoginCommandHandler,
@@ -42,6 +46,10 @@ const handlers = [
   UpdateUserAvatarCommandHandler,
   //data
   RefreshDataFromPokeapiCommandHandler,
+  //pokmeon
+  GetAllPokemonQueryHandler,
+  //Type
+  GetAllTypeQueryHandler,
 ];
 
 @Module({
@@ -65,7 +73,7 @@ const handlers = [
       serveRoot: '/uploads/images',
     }),
   ],
-  controllers: [UserController, AuthController, DataController],
+  controllers: [UserController, AuthController, DataController, PokemonController, TypeController],
   providers: [
     ...handlers,
     //Service

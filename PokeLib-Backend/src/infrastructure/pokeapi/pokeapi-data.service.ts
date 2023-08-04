@@ -18,7 +18,10 @@ export class PokeapiData implements IPokeapiData {
 
   setDataInDatabase = async (): Promise<void> => {
     await this.typeRepo.createOrUpdateFromPokeapi(await this.get<IPokeapiType[]>('types'));
-    await this.pokemonRepo.createOrUpdateFromPokeapi(await this.get<IPokeapiPokemon[]>('pokemon'));
+
+    const pokemons = await this.get<IPokeapiPokemon[]>('pokemon');
+    await this.pokemonRepo.createOrUpdateFromPokeapi(pokemons);
+    await this.pokemonRepo.createOrUpdateEvolutionFromPokeapi(pokemons);
   };
 
   private get = async <T>(endpoint: string): Promise<T> => {

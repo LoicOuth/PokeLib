@@ -6,7 +6,7 @@ export class Team {
   is_public: boolean;
   created_at: Date;
   updated_at: Date;
-  user_id: bigint;
+  user_id: number;
 
   user?: User;
   pokemons_teams?: PokemonToTeam[];

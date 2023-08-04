@@ -1,6 +1,6 @@
 -- CreateTable
 CREATE TABLE `User` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(191) NOT NULL,
     `pseudo` VARCHAR(191) NOT NULL,
     `password` VARCHAR(191) NULL,
@@ -17,20 +17,20 @@ CREATE TABLE `User` (
 
 -- CreateTable
 CREATE TABLE `Team` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
     `is_public` BOOLEAN NOT NULL DEFAULT false,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `user_id` BIGINT NOT NULL,
+    `user_id` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Type` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `poke_api_id` BIGINT NOT NULL,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `poke_api_id` INTEGER NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `color` VARCHAR(191) NOT NULL,
     `sprite` VARCHAR(191) NOT NULL,
@@ -42,7 +42,7 @@ CREATE TABLE `Type` (
 
 -- CreateTable
 CREATE TABLE `Ability` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
 
     UNIQUE INDEX `Ability_name_key`(`name`),
@@ -51,28 +51,28 @@ CREATE TABLE `Ability` (
 
 -- CreateTable
 CREATE TABLE `Evolution` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `condition` VARCHAR(191) NULL,
-    `pokemon_id` BIGINT NOT NULL,
-    `pokemon_evolution_id` BIGINT NOT NULL,
+    `pokemon_id` INTEGER NOT NULL,
+    `pokemon_evolution_id` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `MegaEvolution` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `orbe` VARCHAR(191) NOT NULL,
     `sprite_regular` VARCHAR(191) NOT NULL,
     `sprite_shiny` VARCHAR(191) NOT NULL,
-    `pokemon_id` BIGINT NOT NULL,
+    `pokemon_id` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `Pokemon` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
     `pokedex_order` INTEGER NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `description` TEXT NOT NULL,
@@ -88,8 +88,8 @@ CREATE TABLE `Pokemon` (
     `spe_atk` INTEGER NOT NULL,
     `spe_def` INTEGER NOT NULL,
     `vit` INTEGER NOT NULL,
-    `first_type_id` BIGINT NOT NULL,
-    `second_type_id` BIGINT NULL,
+    `first_type_id` INTEGER NOT NULL,
+    `second_type_id` INTEGER NULL,
 
     UNIQUE INDEX `Pokemon_pokedex_order_key`(`pokedex_order`),
     UNIQUE INDEX `Pokemon_name_key`(`name`),
@@ -98,9 +98,9 @@ CREATE TABLE `Pokemon` (
 
 -- CreateTable
 CREATE TABLE `PokemonToTeam` (
-    `ability_id` BIGINT NOT NULL,
-    `pokemon_id` BIGINT NOT NULL,
-    `team_id` BIGINT NOT NULL,
+    `ability_id` INTEGER NOT NULL,
+    `pokemon_id` INTEGER NOT NULL,
+    `team_id` INTEGER NOT NULL,
 
     PRIMARY KEY (`pokemon_id`, `team_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -108,8 +108,8 @@ CREATE TABLE `PokemonToTeam` (
 -- CreateTable
 CREATE TABLE `AbilityToPokemon` (
     `is_hidden` BOOLEAN NOT NULL,
-    `ability_id` BIGINT NOT NULL,
-    `pokemon_id` BIGINT NOT NULL,
+    `ability_id` INTEGER NOT NULL,
+    `pokemon_id` INTEGER NOT NULL,
 
     PRIMARY KEY (`pokemon_id`, `ability_id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

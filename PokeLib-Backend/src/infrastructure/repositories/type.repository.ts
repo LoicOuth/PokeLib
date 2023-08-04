@@ -9,6 +9,8 @@ import { Type } from 'src/domain/entities/type.entity';
 export class TypeRepository implements ITypeRepository {
   constructor(private readonly prismaClient: PrismaService) {}
 
+  getAll = async (): Promise<Type[]> => this.prismaClient.type.findMany();
+
   createOrUpdateFromPokeapi = async (types: IPokeapiType[]): Promise<void> => {
     for (const type of types) {
       const data = {

@@ -1,5 +1,5 @@
 export interface IPokeapiType {
-  id: bigint;
+  id: number;
   name: {
     fr: string;
     en: string;

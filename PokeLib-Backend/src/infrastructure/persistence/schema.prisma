@@ -13,7 +13,7 @@ enum Role {
 }
 
 model User {
-   id            BigInt   @id @default(autoincrement())
+   id            Int      @id @default(autoincrement())
    email         String   @unique
    pseudo        String   @unique
    password      String?
@@ -26,20 +26,20 @@ model User {
 }
 
 model Team {
-   id         BigInt   @id @default(autoincrement())
+   id         Int      @id @default(autoincrement())
    name       String
    is_public  Boolean  @default(false)
    created_at DateTime @default(now())
    updated_at DateTime @default(now()) @updatedAt
-   user_id    BigInt
+   user_id    Int
 
    user           User            @relation(fields: [user_id], references: [id])
    pokemons_teams PokemonToTeam[]
 }
 
 model Type {
-   id          BigInt @id @default(autoincrement())
-   poke_api_id BigInt @unique
+   id          Int    @id @default(autoincrement())
+   poke_api_id Int    @unique
    name        String @unique
    color       String
    sprite      String
@@ -49,7 +49,7 @@ model Type {
 }
 
 model Ability {
-   id   BigInt @id @default(autoincrement())
+   id   Int    @id @default(autoincrement())
    name String @unique
 
    pokemons_teams PokemonToTeam[]
@@ -57,27 +57,27 @@ model Ability {
 }
 
 model Evolution {
-   id                   BigInt  @id @default(autoincrement())
+   id                   Int     @id @default(autoincrement())
    condition            String?
-   pokemon_id           BigInt
-   pokemon_evolution_id BigInt
+   pokemon_id           Int
+   pokemon_evolution_id Int
 
    pokemon           Pokemon @relation(name: "pokemon_evolution", fields: [pokemon_id], references: [id])
    pokemon_evolution Pokemon @relation(name: "pokemon_evolution_1", fields: [pokemon_evolution_id], references: [id])
 }
 
 model MegaEvolution {
-   id             BigInt @id @default(autoincrement())
+   id             Int    @id @default(autoincrement())
    orbe           String
    sprite_regular String
    sprite_shiny   String
-   pokemon_id     BigInt
+   pokemon_id     Int
 
    pokemon Pokemon @relation(fields: [pokemon_id], references: [id])
 }
 
 model Pokemon {
-   id             BigInt  @id @default(autoincrement())
+   id             Int     @id @default(autoincrement())
    pokedex_order  Int     @unique
    name           String  @unique
    description    String  @db.Text
@@ -93,8 +93,8 @@ model Pokemon {
    spe_atk        Int
    spe_def        Int
    vit            Int
-   first_type_id  BigInt
-   second_type_id BigInt?
+   first_type_id  Int
+   second_type_id Int?
 
    first_type        Type               @relation(name: "first_type", fields: [first_type_id], references: [id])
    second_type       Type?              @relation(name: "second_type", fields: [second_type_id], references: [id])
@@ -106,9 +106,9 @@ model Pokemon {
 }
 
 model PokemonToTeam {
-   ability_id BigInt
-   pokemon_id BigInt
-   team_id    BigInt
+   ability_id Int
+   pokemon_id Int
+   team_id    Int
 
    pokemon Pokemon @relation(fields: [pokemon_id], references: [id])
    team    Team    @relation(fields: [team_id], references: [id])
@@ -119,8 +119,8 @@ model PokemonToTeam {
 
 model AbilityToPokemon {
    is_hidden  Boolean
-   ability_id BigInt
-   pokemon_id BigInt
+   ability_id Int
+   pokemon_id Int
 
    ability Ability @relation(fields: [ability_id], references: [id])
    pokemon Pokemon @relation(fields: [pokemon_id], references: [id])

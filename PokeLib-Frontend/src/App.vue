@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app v-if="appDataStore.dataIsFetching">
     <v-layout>
        <v-app-bar scroll-behavior="elevate">
         <v-app-bar-nav-icon class="navbar" to="/">
@@ -17,10 +17,18 @@
        </v-main>
     </v-layout>
   </v-app>
+
+  <SplashScreen v-else />
 </template>
 
-<style scoped lang="scss">
+<script setup lang="ts">
+import SplashScreen from './components/SplashScreen.vue'
+import { useAppData } from './stores/app-data'
 
+const appDataStore = useAppData()
+</script>
+
+<style scoped lang="scss">
 .navbar {
   cursor: pointer;
 }

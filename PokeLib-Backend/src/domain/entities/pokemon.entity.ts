@@ -21,8 +21,8 @@ export class Pokemon extends BaseEntity {
   spe_atk: number;
   spe_def: number;
   vit: number;
-  first_type_id: bigint;
-  second_type_id?: bigint;
+  first_type_id: number;
+  second_type_id?: number;
 
   first_type?: Type;
   second_type?: Type;

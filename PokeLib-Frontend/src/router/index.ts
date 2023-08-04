@@ -8,6 +8,11 @@ const router = createRouter({
       name: 'home',
       component: () => import('../views/HomeView.vue'),
     },
+    {
+      path: '/pokedex',
+      name: 'pokedex',
+      component: () => import('../views/PokedexView.vue'),
+    },
   ],
 });
 

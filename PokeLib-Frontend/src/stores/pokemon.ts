@@ -9,6 +9,8 @@ export const usePokemonStore = defineStore('pokemons', () => {
   const pokemons = ref<IPokemon[]>([]);
   const types = ref<IType[]>([]);
 
+  const getTypeFromId = (id: number) => types.value.find((el) => el.id === id);
+
   const getPokemons = async () => {
     const data = await fetch.get<IPokemon[]>('pokemons');
 
@@ -24,6 +26,7 @@ export const usePokemonStore = defineStore('pokemons', () => {
   return {
     pokemons,
     types,
+    getTypeFromId,
     getPokemons,
     getTypes,
   };

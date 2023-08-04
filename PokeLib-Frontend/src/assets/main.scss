@@ -1,1 +1,27 @@
-@use 'vuetify'
+@use 'vuetify';
+
+html { 
+   overflow-y: auto; 
+   scroll-behavior: smooth;
+}
+
+/* Chrome, Edge, and Safari */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: #808080 #303030;
+	&::-webkit-scrollbar {
+		width: 10px;
+	}
+	&::-webkit-scrollbar-track {
+		background: #303030;
+	}
+	&::-webkit-scrollbar-thumb {
+		background-color: #808080;
+		border-radius: 10px;
+		border: 3px solid #303030;
+	}
+}
+
+@mixin dc-color($color) {
+   background-color: $color;
+}

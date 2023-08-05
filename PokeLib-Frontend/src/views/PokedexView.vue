@@ -11,7 +11,7 @@
         <template v-slot:default="{ item: pokemon }">
           <div
             class="d-flex pokemon pa-5 align-center rounded-lg elevation-3 ma-5"
-            :style="{ '--bg': getTypeFromId(pokemon.first_type_id)?.color }"
+            :style="{ '--bg': getBackgroundColor(pokemon.first_type_id, pokemon.second_type_id) }"
           >
             <img :src="pokemon.sprite_regular" />
             <h1 class="ml-10">{{ pokemon.name }}</h1>
@@ -22,9 +22,9 @@
     </div>
   </div>
 
-  <v-tooltip text="Retourner en haut">
+  <v-tooltip v-if="!isTop" text="Retourner en haut">
     <template v-slot:activator="{ props }">
-      <div v-if="!isTop" class="to-top elevation-3" @click="goToTop" v-bind="props">
+      <div class="to-top elevation-3" @click="goToTop" v-bind="props">
         <v-icon icon="mdi-arrow-up" />
       </div>
     </template>
@@ -33,12 +33,13 @@
 
 <script setup lang="ts">
 import { usePokemonStore } from '@/stores/pokemon';
+import { getBackgroundColor } from '@/utils/color.util';
 import { ref } from 'vue';
 
 const isTop = ref(true);
 const virtual = ref();
 
-const { pokemons, getTypeFromId } = usePokemonStore();
+const { pokemons } = usePokemonStore();
 
 const onScroll = (e: any) => {
   isTop.value = e.target.scrollTop === 0;
@@ -59,7 +60,7 @@ const goToTop = () => {
     position: absolute;
     height: 100%;
     width: 20%;
-    background-color: var(--bg);
+    background: var(--bg);
     transition: all 300ms;
     left: -5px;
     border-bottom-left-radius: 5px;

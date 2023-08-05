@@ -10,11 +10,30 @@
       class="bg-surface h-100 d-flex flex-column align-center relative rounded px-md-10 px-4"
       :class="mdAndDown ? 'w-100' : 'w-50'"
     >
-      <img class="pokemon-img" :src="pokemon?.sprite_regular" height="250" width="250" />
+      <img
+        class="pokemon-img"
+        :src="showShiny ? pokemon?.sprite_shiny : pokemon?.sprite_regular"
+        height="250"
+        width="250"
+      />
 
       <div class="d-flex justify-space-between w-100 detail-header">
         <div class="d-flex flex-column">
-          <h1>{{ pokemon?.name }}</h1>
+          <h1>
+            {{ pokemon?.name }}
+            <v-tooltip :text="showShiny ? 'Normal' : 'shiny'" location="bottom">
+              <template v-slot:activator="{ props }">
+                <v-icon
+                  v-if="pokemon?.sprite_shiny"
+                  class="ml-2 icon-shiny"
+                  icon="mdi-drama-masks"
+                  @click="showShiny = !showShiny"
+                  v-bind="props"
+                >
+                </v-icon>
+              </template>
+            </v-tooltip>
+          </h1>
           <TypeComponent :first-type-id="pokemon!.first_type_id" :second-type-id="pokemon?.second_type_id" />
         </div>
 
@@ -27,14 +46,28 @@
         <h2 class="flex-1-1">Generation {{ pokemon?.generation }}</h2>
       </div>
 
-      <div class="d-flex flex-column w-100 stat-container">
-        <h1>Stats :</h1>
-        <PokemonStat :value="pokemon!.atk" label="Attaque" />
-        <PokemonStat :value="pokemon!.def" label="Défense" />
-        <PokemonStat :value="pokemon!.spe_atk" label="Attaque spéciale" />
-        <PokemonStat :value="pokemon!.spe_def" label="Défense spéciale" />
-        <PokemonStat :value="pokemon!.vit" label="Vitesse" />
-      </div>
+      <v-tabs v-model="tab" class="mt-10 w-100" stacked bg-color="primary">
+        <v-tab value="stat">
+          <v-icon class="mb-3" icon="mdi-chart-timeline" />
+          Stats
+        </v-tab>
+        <v-tab value="evolution">
+          <v-icon class="mb-3" icon="mdi-arrow-top-right-thin" />
+          Evolutions
+        </v-tab>
+      </v-tabs>
+
+      <v-window v-model="tab" class="w-100">
+        <v-window-item value="stat">
+          <div class="d-flex flex-column w-100 stat-container">
+            <PokemonStat :value="pokemon!.atk" label="Attaque" />
+            <PokemonStat :value="pokemon!.def" label="Défense" />
+            <PokemonStat :value="pokemon!.spe_atk" label="Attaque spéciale" />
+            <PokemonStat :value="pokemon!.spe_def" label="Défense spéciale" />
+            <PokemonStat :value="pokemon!.vit" label="Vitesse" />
+          </div>
+        </v-window-item>
+      </v-window>
     </div>
   </div>
 </template>
@@ -52,10 +85,17 @@ const route = useRoute();
 const { mdAndDown } = useDisplay();
 const { getPokemonFromName } = usePokemonStore();
 
+const tab = ref('one');
+const showShiny = ref(false);
+
 const pokemon = ref(getPokemonFromName(route.params.name.toString()));
 </script>
 
 <style scoped lang="scss">
+.icon-shiny:hover {
+  color: #30a7d7;
+}
+
 .pokemon-img {
   position: absolute;
   top: 50px;

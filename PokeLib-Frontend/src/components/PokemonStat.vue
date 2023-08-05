@@ -4,7 +4,7 @@
     class="rounded"
     :height="20"
     max="252"
-    :color="isHovered ? 'secondary' : 'primary'"
+    :color="isHovered ? 'primary' : 'white'"
     :striped="isHovered"
     @mouseenter="isHovered = true"
     @mouseleave="isHovered = false"

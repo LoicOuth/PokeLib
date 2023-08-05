@@ -8,15 +8,16 @@
             pokemonStore.randomPokemon.second_type_id,
           ),
         }"
-        class="pa-5 w-50"
+        class="pa-md-5 pa-1 mt-6 mt-md-0"
+        :class="mdAndDown ? 'w-100' : 'w-50'"
       >
         <div class="relative">
           <h1 class="text-center">
             {{ pokemonStore.randomPokemon.name }}
           </h1>
         </div>
-        <div class="d-flex justify-space-between align-center pokemon-container">
-          <img :src="pokemonStore.randomPokemon.sprite_regular" />
+        <div class="d-flex justify-space-between align-center">
+          <img :src="pokemonStore.randomPokemon.sprite_regular" :height="mdAndDown ? '100' : '250'" />
           <div class="d-flex flex-column text-h6 w-50">
             {{ pokemonStore.randomPokemon.description }}
             <type-component
@@ -30,7 +31,7 @@
         </div>
       </v-card>
 
-      <div class="d-flex flex-column w-50 pa-md-8 pa-2">
+      <div class="d-flex flex-column pa-md-8 pa-2" :class="mdAndDown ? 'w-100' : 'w-50'">
         <h1>Le pokémon aléatoire</h1>
         <v-divider color="white" />
 
@@ -54,7 +55,10 @@ import TypeComponent from '@/components/TypeComponent.vue';
 import { usePokemonStore } from '@/stores/pokemon';
 import { getBackgroundColor } from '@/utils/color.util';
 import { onMounted } from 'vue';
+import { useDisplay } from 'vuetify';
+
 const pokemonStore = usePokemonStore();
+const { mdAndDown } = useDisplay();
 
 onMounted(() => {
   pokemonStore.generateNewRandomPokemon();
@@ -62,12 +66,6 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-.pokemon-container {
-  > img {
-    height: 250px;
-  }
-}
-
 .pokedex-number {
   writing-mode: vertical-rl;
   text-orientation: mixed;

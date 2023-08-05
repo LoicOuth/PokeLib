@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex justify-center">
-    <div class="d-flex flex-wrap w-50">
+    <div class="d-flex flex-wrap" :class="mdAndDown ? 'w-100' : 'w-50'">
       <v-virtual-scroll
         ref="virtual"
         height="calc(100vh - 64px)"
@@ -35,11 +35,13 @@
 import { usePokemonStore } from '@/stores/pokemon';
 import { getBackgroundColor } from '@/utils/color.util';
 import { ref } from 'vue';
+import { useDisplay } from 'vuetify';
 
 const isTop = ref(true);
 const virtual = ref();
 
 const { pokemons } = usePokemonStore();
+const { mdAndDown } = useDisplay();
 
 const onScroll = (e: any) => {
   isTop.value = e.target.scrollTop === 0;
@@ -107,5 +109,6 @@ const goToTop = () => {
   align-items: center;
   line-height: 1;
   cursor: pointer;
+  z-index: 10;
 }
 </style>

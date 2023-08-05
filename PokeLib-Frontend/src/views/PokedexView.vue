@@ -12,6 +12,7 @@
           <div
             class="d-flex pokemon pa-5 align-center rounded-lg elevation-3 ma-5"
             :style="{ '--bg': getBackgroundColor(pokemon.first_type_id, pokemon.second_type_id) }"
+            @click="router.push(`/pokedex/${pokemon.name}`)"
           >
             <img :src="pokemon.sprite_regular" />
             <h1 class="ml-10">{{ pokemon.name }}</h1>
@@ -35,6 +36,7 @@
 import { usePokemonStore } from '@/stores/pokemon';
 import { getBackgroundColor } from '@/utils/color.util';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 
 const isTop = ref(true);
@@ -42,6 +44,7 @@ const virtual = ref();
 
 const { pokemons } = usePokemonStore();
 const { mdAndDown } = useDisplay();
+const router = useRouter();
 
 const onScroll = (e: any) => {
   isTop.value = e.target.scrollTop === 0;
@@ -64,7 +67,7 @@ const goToTop = () => {
     width: 20%;
     background: var(--bg);
     transition: all 300ms;
-    left: -5px;
+    left: 0px;
     border-bottom-left-radius: 5px;
     border-top-left-radius: 5px;
     border-bottom-right-radius: 100px;
@@ -73,7 +76,7 @@ const goToTop = () => {
 
   &:hover::before {
     width: 100%;
-    border-radius: 0;
+    border-radius: 5px;
   }
 
   > img {

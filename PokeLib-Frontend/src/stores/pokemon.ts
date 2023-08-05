@@ -12,6 +12,8 @@ export const usePokemonStore = defineStore('pokemons', () => {
 
   const pokemonsCount = computed(() => pokemons.value.length);
 
+  const getPokemonFromName = (name: string) => pokemons.value.find((el) => el.name === name);
+
   const getTypeFromId = (id: number) => types.value.find((el) => el.id === id);
 
   const generateNewRandomPokemon = () => {
@@ -38,6 +40,7 @@ export const usePokemonStore = defineStore('pokemons', () => {
     pokemonsCount,
     randomPokemon,
     generateNewRandomPokemon,
+    getPokemonFromName,
     getTypeFromId,
     getPokemons,
     getTypes,

@@ -20,12 +20,14 @@
           <img :src="pokemonStore.randomPokemon.sprite_regular" :height="mdAndDown ? '100' : '250'" />
           <div class="d-flex flex-column text-h6 w-50">
             {{ pokemonStore.randomPokemon.description }}
-            <type-component
+            <TypeComponent
               class="mt-5"
               :first-type-id="pokemonStore.randomPokemon.first_type_id"
               :second-type-id="pokemonStore.randomPokemon.second_type_id"
             />
-            <v-btn class="mt-8">En savoir plus</v-btn>
+            <v-btn class="mt-8" @click="router.push(`/pokedex/${pokemonStore.randomPokemon.name}`)"
+              >En savoir plus</v-btn
+            >
           </div>
           <h1 class="pokedex-number">#{{ pokemonStore.randomPokemon.pokedex_order }}</h1>
         </div>
@@ -55,10 +57,12 @@ import TypeComponent from '@/components/TypeComponent.vue';
 import { usePokemonStore } from '@/stores/pokemon';
 import { getBackgroundColor } from '@/utils/color.util';
 import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
 
 const pokemonStore = usePokemonStore();
 const { mdAndDown } = useDisplay();
+const router = useRouter();
 
 onMounted(() => {
   pokemonStore.generateNewRandomPokemon();

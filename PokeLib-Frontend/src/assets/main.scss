@@ -22,6 +22,6 @@ html {
 	}
 }
 
-@mixin dc-color($color) {
-   background-color: $color;
+.cursor-pointer {
+	cursor: pointer;
 }

@@ -3,8 +3,8 @@ import { Pokemon } from './pokemon.entity';
 
 export class Evolution extends BaseEntity {
   condition?: string;
-  pokemon_id: bigint;
-  pokemon_evolution_id: bigint;
+  pokemon_id: number;
+  pokemon_evolution_id: number;
 
   pokemon?: Pokemon;
   pokemon_evolution?: Pokemon;

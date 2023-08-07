@@ -1,3 +1,5 @@
+import type { IEvolution } from './evolution.interface';
+
 export interface IPokemon {
   id: number;
   pokedex_order: number;
@@ -17,4 +19,5 @@ export interface IPokemon {
   vit: number;
   first_type_id: number;
   second_type_id?: number;
+  evolutions?: IEvolution[];
 }

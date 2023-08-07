@@ -43,7 +43,7 @@
       <div class="d-flex justify-space-between w-100 mt-10 text-center">
         <h2 class="flex-1-1">Taille : {{ pokemon?.height }}</h2>
         <h2 class="flex-1-1">Poid : {{ pokemon?.weight }}</h2>
-        <h2 class="flex-1-1">Generation {{ pokemon?.generation }}</h2>
+        <h2 class="flex-1-1">Génération {{ pokemon?.generation }}</h2>
       </div>
 
       <v-tabs v-model="tab" class="mt-10 w-100" stacked bg-color="primary">
@@ -51,7 +51,7 @@
           <v-icon class="mb-3" icon="mdi-chart-timeline" />
           Stats
         </v-tab>
-        <v-tab value="evolution">
+        <v-tab v-if="pokemon?.evolutions && pokemon.evolutions.length > 0" value="evolution">
           <v-icon class="mb-3" icon="mdi-arrow-top-right-thin" />
           Evolutions
         </v-tab>
@@ -67,6 +67,10 @@
             <PokemonStat :value="pokemon!.vit" label="Vitesse" />
           </div>
         </v-window-item>
+
+        <v-window-item value="evolution">
+          <PokemonEvolution class="mt-16" :pokemon="pokemon!" />
+        </v-window-item>
       </v-window>
     </div>
   </div>
@@ -75,11 +79,13 @@
 <script setup lang="ts">
 import PokemonStat from '@/components/PokemonStat.vue';
 import TypeComponent from '@/components/TypeComponent.vue';
+import PokemonEvolution from '@/components/PokemonEvolution/PokemonEvolutionComponent.vue';
 import { usePokemonStore } from '@/stores/pokemon';
 import { getBackgroundColor } from '@/utils/color.util';
 import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDisplay } from 'vuetify';
+import { computed } from 'vue';
 
 const route = useRoute();
 const { mdAndDown } = useDisplay();
@@ -88,7 +94,7 @@ const { getPokemonFromName } = usePokemonStore();
 const tab = ref('one');
 const showShiny = ref(false);
 
-const pokemon = ref(getPokemonFromName(route.params.name.toString()));
+const pokemon = computed(() => getPokemonFromName(route.params.name.toString()));
 </script>
 
 <style scoped lang="scss">

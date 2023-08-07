@@ -14,6 +14,13 @@ export const usePokemonStore = defineStore('pokemons', () => {
 
   const getPokemonFromName = (name: string) => pokemons.value.find((el) => el.name === name);
 
+  const getPokemonFromId = (id: number, lastOrNext: number = 0) =>
+    pokemons.value[pokemons.value.findIndex((el) => el.id === id) + lastOrNext];
+
+  const getPrevPokemon = (id: number) => getPokemonFromId(id, -1);
+
+  const getNextPokemon = (id: number) => getPokemonFromId(id, 1);
+
   const getTypeFromId = (id: number) => types.value.find((el) => el.id === id);
 
   const generateNewRandomPokemon = () => {
@@ -41,6 +48,8 @@ export const usePokemonStore = defineStore('pokemons', () => {
     randomPokemon,
     generateNewRandomPokemon,
     getPokemonFromName,
+    getNextPokemon,
+    getPrevPokemon,
     getTypeFromId,
     getPokemons,
     getTypes,

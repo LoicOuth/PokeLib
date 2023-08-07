@@ -93,7 +93,7 @@
         </div>
       </div>
 
-      <div class="footer">
+      <div v-if="!mdAndDown" class="footer">
         <slot />
       </div>
     </v-card>

@@ -10,13 +10,7 @@
       class="bg-surface h-100 d-flex flex-column align-center relative rounded px-md-10 px-4"
       :class="mdAndDown ? 'w-100' : 'w-50'"
     >
-      <img
-        class="pokemon-img"
-        :src="showShiny ? pokemon?.sprite_shiny : pokemon?.sprite_regular"
-        height="250"
-        width="250"
-      />
-
+      <PokemonDetailHeader :pokemon="pokemon!" :show-shiny="showShiny" />
       <div class="d-flex justify-space-between w-100 detail-header">
         <div class="d-flex flex-column">
           <h1>
@@ -86,6 +80,7 @@ import { ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useDisplay } from 'vuetify';
 import { computed } from 'vue';
+import PokemonDetailHeader from '@/components/PokemonDetailHeader.vue';
 
 const route = useRoute();
 const { mdAndDown } = useDisplay();
@@ -100,11 +95,6 @@ const pokemon = computed(() => getPokemonFromName(route.params.name.toString()))
 <style scoped lang="scss">
 .icon-shiny:hover {
   color: #30a7d7;
-}
-
-.pokemon-img {
-  position: absolute;
-  top: 50px;
 }
 
 .detail-header {

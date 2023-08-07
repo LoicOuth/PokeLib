@@ -15,7 +15,7 @@ export class PokemonRepository implements IPokemonRepository {
   ) {}
 
   getAll = async (): Promise<Pokemon[]> =>
-    this.prismaClient.pokemon.findMany({ include: { evolutions: { include: { pokemon_evolution: true } } } });
+    await this.prismaClient.pokemon.findMany({ include: { evolutions: { include: { pokemon_evolution: true } } } });
 
   //Need refactor
   createOrUpdateFromPokeapi = async (pokemons: IPokeapiPokemon[]): Promise<void> => {
@@ -83,7 +83,9 @@ export class PokemonRepository implements IPokemonRepository {
   //Need refactor
   createOrUpdateEvolutionFromPokeapi = async (pokemons: IPokeapiPokemon[]): Promise<void> => {
     for (const pokemon of pokemons) {
-      const pokemonEntity = await this.prismaClient.pokemon.findUnique({
+      if (pokemon.pokedexId === 0) continue;
+
+      const pokemonEntity = await this.prismaClient.pokemon.findUniqueOrThrow({
         where: { pokedex_order: pokemon.pokedexId },
       });
 

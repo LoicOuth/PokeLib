@@ -15,6 +15,10 @@ export class UserRepository implements IUserRepository {
 
   getOne = async (id: number): Promise<User> => await this.prismaClient.user.findUnique({ where: { id } });
 
+  getByEmail = async (email: string): Promise<User> => await this.prismaClient.user.findUnique({ where: { email } });
+
+  getByPseudo = async (pseudo: string): Promise<User> => await this.prismaClient.user.findFirst({ where: { pseudo } });
+
   getOneFromEmailOrPseudo = async (username: string): Promise<User | undefined> =>
     await this.prismaClient.user.findFirst({ where: { OR: [{ email: username }, { pseudo: username }] } });
 

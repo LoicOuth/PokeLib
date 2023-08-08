@@ -15,8 +15,7 @@
           </div>
         </template>
         <template v-slot:append>
-          <v-btn v-if="!mdAndDown" color="secondary" variant="flat" prepend-icon="mdi-login"> Se connecter </v-btn>
-          <v-btn v-else color="secondary" variant="flat" icon="mdi-login" />
+          <AuthComponent />
         </template>
       </v-app-bar>
 
@@ -27,16 +26,17 @@
   </v-app>
 
   <SplashScreen v-else />
+  <AlertHandling />
 </template>
 
 <script setup lang="ts">
-import { useDisplay } from 'vuetify';
-import NavLink from './components/NavLink.vue';
-import SplashScreen from './components/SplashScreen.vue';
+import AuthComponent from './components/Auth/AuthComponent.vue';
+import AlertHandling from './components/General/AlertHandling.vue';
+import NavLink from './components/General/NavLink.vue';
+import SplashScreen from './components/General/SplashScreen.vue';
 import { useAppData } from './stores/app-data';
 
 const appDataStore = useAppData();
-const { mdAndDown } = useDisplay();
 </script>
 
 <style scoped lang="scss">

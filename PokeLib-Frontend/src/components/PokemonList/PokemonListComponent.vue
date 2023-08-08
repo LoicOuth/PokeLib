@@ -32,7 +32,6 @@
 </template>
 
 <script setup lang="ts">
-import GoToTop from '@/components/GoToTop.vue';
 import { usePokemonStore } from '@/stores/pokemon';
 import { getBackgroundColor } from '@/utils/color.util';
 import { ref } from 'vue';
@@ -40,6 +39,7 @@ import { useRouter } from 'vue-router';
 import PokemonListFilter from './PokemonListFilter.vue';
 import type { IPokemon } from '@/core/interfaces/pokemon.interface';
 import { useDisplay } from 'vuetify';
+import GoToTop from '../General/GoToTop.vue';
 
 const { pokemons } = usePokemonStore();
 const { mdAndDown } = useDisplay();

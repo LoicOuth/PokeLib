@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Query, UploadedFile } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put, Query, Req, UploadedFile } from '@nestjs/common';
 import { QueryBus, CommandBus } from '@nestjs/cqrs';
 import { GetAllUserQuery } from 'src/application/user/queries/get-all-user.query';
 import { GetMeQuery } from 'src/application/user/queries/get-me.query';
@@ -7,6 +7,7 @@ import { CreateUserCommand } from 'src/application/user/commands/create-user.com
 import { UpdateUserAvatarCommand } from 'src/application/user/commands/update-user-avatar.command';
 import { Auth } from 'src/application/common/decorators/auth.decorator';
 import { UploadFile } from 'src/application/common/decorators/upload-file.decorator';
+import { Request } from 'express';
 
 @ApiTags('Users')
 @Controller('users')
@@ -33,9 +34,9 @@ export class UserController {
   @Auth()
   @UploadFile('avatar')
   @Put('me/update/avatar')
-  async updateAvatar(@UploadedFile() avatar: Express.Multer.File) {
+  async updateAvatar(@UploadedFile() avatar: Express.Multer.File, @Req() request: Request) {
     const command = new UpdateUserAvatarCommand();
-    command.avatar = avatar.filename;
+    command.avatar = `${request.protocol}://${request.get('host')}/uploads/images/${avatar.filename}`;
 
     return await this.commandBus.execute(command);
   }

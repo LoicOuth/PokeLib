@@ -51,9 +51,20 @@ export const useAuthStore = defineStore('auth', () => {
     connectedUser.value = response;
   };
 
-  const resetConnection = () => {
+  const resetConnection = (isLogout: boolean = false) => {
     localStorage.clear();
     connectedUser.value = undefined;
+
+    if (isLogout) router.push('/');
+  };
+
+  const updateAvatar = async (file: File) => {
+    const form = new FormData();
+    form.append('avatar', file);
+
+    await fetch.put('users/me/update/avatar', form);
+
+    await getConnectedUser();
   };
 
   return {
@@ -63,5 +74,6 @@ export const useAuthStore = defineStore('auth', () => {
     register,
     getConnectedUser,
     resetConnection,
+    updateAvatar,
   };
 });

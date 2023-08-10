@@ -34,7 +34,7 @@ export class AlertBuilder {
     this.setType('success');
     this.setShowTime(DEFAULT_SHOW_TIME);
 
-    if (!this.title) this.setTitle('Success');
+    if (!this.title) this.setTitle('Succès');
 
     return this.build();
   }
@@ -43,7 +43,7 @@ export class AlertBuilder {
     this.setType('error');
     this.setShowTime(DEFAULT_SHOW_TIME);
 
-    if (!this.title) this.setTitle('Error');
+    if (!this.title) this.setTitle('Erreur');
 
     return this.build();
   }
@@ -52,7 +52,7 @@ export class AlertBuilder {
     this.setType('warning');
     this.setShowTime(DEFAULT_SHOW_TIME);
 
-    if (!this.title) this.setTitle('Warning');
+    if (!this.title) this.setTitle('Attention');
 
     return this.build();
   }

@@ -15,18 +15,24 @@ export const useApi = () => {
   const post = async <T>(endpoint: string, body: Object, parseResponse: boolean = false): Promise<T> =>
     await send(endpoint, 'POST', body, parseResponse);
 
-  const send = async (endpoint: string, method: string, body?: Object, parseReponse: boolean = true) => {
+  const put = async <T>(endpoint: string, body: Object | FormData, parseResponse: boolean = false): Promise<T> =>
+    await send(endpoint, 'PUT', body, parseResponse);
+
+  const send = async (endpoint: string, method: string, body?: Object | FormData, parseReponse: boolean = true) => {
     const accessToken = localStorage.getItem(LOCALSTORAGE.ACCESS_TOKEN);
+
+    const headers: HeadersInit = {
+      Accept: body && body instanceof FormData ? 'multipart/form-data' : 'application/json',
+      Authorization: accessToken ? `Bearer ${accessToken}` : '',
+    };
+
+    if (body && !(body instanceof FormData)) headers['Content-Type'] = 'application/json';
 
     try {
       const response = await fetch(`${getApiUrl()}/${endpoint}`, {
         method,
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          Authorization: accessToken ? `Bearer ${accessToken}` : '',
-        },
-        body: JSON.stringify(body) ?? null,
+        headers: { ...headers },
+        body: body && body instanceof FormData ? body : JSON.stringify(body),
       });
 
       if (!response.ok) {
@@ -67,5 +73,6 @@ export const useApi = () => {
   return {
     get,
     post,
+    put,
   };
 };

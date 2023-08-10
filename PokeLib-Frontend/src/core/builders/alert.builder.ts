@@ -1,12 +1,12 @@
 import guidUtil from '@/utils/guid.util';
-import { Alert } from '../models/alert.model';
+import { Alert, type TypeAlert } from '../models/alert.model';
 
 const DEFAULT_SHOW_TIME = 5000;
 
 export class AlertBuilder {
   protected message: string;
   protected title!: string;
-  protected isSuccess!: boolean;
+  protected type!: TypeAlert;
   protected showtime!: number;
 
   constructor(message: string) {
@@ -18,8 +18,8 @@ export class AlertBuilder {
     return this;
   };
 
-  private setIsSuccess = (isSuccess: boolean): AlertBuilder => {
-    this.isSuccess = isSuccess;
+  private setType = (type: TypeAlert): AlertBuilder => {
+    this.type = type;
     return this;
   };
 
@@ -28,27 +28,31 @@ export class AlertBuilder {
     return this;
   };
 
-  private build = (): Alert =>
-    new Alert(guidUtil().generate(), this.message, this.title, this.isSuccess, this.showtime);
+  private build = (): Alert => new Alert(guidUtil().generate(), this.message, this.title, this.type, this.showtime);
 
   buildSuccess(): Alert {
-    this.setIsSuccess(true);
+    this.setType('success');
     this.setShowTime(DEFAULT_SHOW_TIME);
 
-    if (!this.title) {
-      this.setTitle('Success');
-    }
+    if (!this.title) this.setTitle('Success');
 
     return this.build();
   }
 
   buildError(): Alert {
-    this.setIsSuccess(false);
+    this.setType('error');
     this.setShowTime(DEFAULT_SHOW_TIME);
 
-    if (!this.title) {
-      this.setTitle('Error');
-    }
+    if (!this.title) this.setTitle('Error');
+
+    return this.build();
+  }
+
+  buildWarning(): Alert {
+    this.setType('warning');
+    this.setShowTime(DEFAULT_SHOW_TIME);
+
+    if (!this.title) this.setTitle('Warning');
 
     return this.build();
   }

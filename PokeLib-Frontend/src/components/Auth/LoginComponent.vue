@@ -20,7 +20,7 @@
     <template #append>
       <v-divider class="my-10" />
 
-      <v-btn block size="large" variant="tonal">
+      <v-btn block size="large" variant="tonal" @click="handleGoogleLogin()">
         <template #prepend>
           <GoogleIcon class="mr-5" height="25" width="25" />
         </template>
@@ -35,8 +35,12 @@ import GoogleIcon from '@/resources/GoogleIcon.vue';
 import { useAuthStore } from '@/stores/auth';
 import { ref } from 'vue';
 import GenericForm from '../General/GenericForm.vue';
+import { useConfig } from '@/composables/useConfig';
+
+const emits = defineEmits(['close:dialog']);
 
 const authStore = useAuthStore();
+const config = useConfig();
 
 const visible = ref(false);
 
@@ -53,5 +57,11 @@ const handleLogin = async () => {
 
 const resetFormData = () => {
   formData.value = { ...initialFormData };
+  emits('close:dialog');
+};
+
+const handleGoogleLogin = () => {
+  const redirectUri = `${window.location.protocol}//${window.location.host}`;
+  window.location.href = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${config.getGoogleClientId()}&redirect_uri=${redirectUri}&response_type=code&state=state_parameter_passthrough_value&scope=${config.getGoogleClientScope()}`;
 };
 </script>

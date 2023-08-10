@@ -5,6 +5,7 @@ import { GoogleUserModel } from '../models/google-user.model';
 export abstract class IUserRepository {
   abstract getAll(): Promise<User[]>;
   abstract getOne(id: number): Promise<User>;
+  abstract getByGoogleUuid(uuid: string): Promise<User>;
   abstract getByEmail(email: string): Promise<User>;
   abstract getByPseudo(pseudo: string): Promise<User>;
   abstract getOneFromEmailOrPseudo(username: string): Promise<User | undefined>;

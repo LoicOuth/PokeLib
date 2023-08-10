@@ -43,7 +43,7 @@ export class GoogleAuthService implements IGoogleAuth {
       user.id = email.metadata.source.id;
       user.email = email.value;
       user.name = response.data.names.find((el) => el.metadata.primary).displayName;
-      user.picture = response.data.photos.find((el) => el.default).url;
+      user.picture = response.data.photos.find((el) => el.metadata.primary).url;
 
       return user;
     } catch (error) {

@@ -13,7 +13,9 @@ interface GooglePeopleName {
 
 interface GooglePeoplePhotos {
   url: string;
-  default: boolean;
+  metadata: {
+    primary: boolean;
+  };
 }
 
 interface GoogleEmailsPhotos {

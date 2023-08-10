@@ -11,7 +11,6 @@ export const useAppData = defineStore('app-data', () => {
   };
 
   const setNewAlert = (alert: Alert) => {
-    console.log(alert);
     alerts.value.push(alert);
 
     setTimeout(() => {

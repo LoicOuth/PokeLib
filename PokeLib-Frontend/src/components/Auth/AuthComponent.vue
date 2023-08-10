@@ -21,7 +21,7 @@
       <div class="pa-10">
         <v-window v-model="tab" class="w-100 pa-5">
           <v-window-item value="login">
-            <LoginComponent />
+            <LoginComponent @close:dialog="loginDialog = false" />
           </v-window-item>
           <v-window-item value="register">
             <RegisterComponent @go-to-login="goToLoginTab()" />

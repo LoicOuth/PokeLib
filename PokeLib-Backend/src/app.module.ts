@@ -35,6 +35,7 @@ import { GetAllPokemonQueryHandler } from './application/pokemon/queries/get-all
 import { PokemonController } from './presentation/controllers/pokemon.controller';
 import { TypeController } from './presentation/controllers/type.controller';
 import { GetAllTypeQueryHandler } from './application/type/queries/get-all-type.query';
+import { UserHelper } from './application/user/helpers/user.helper';
 
 const handlers = [
   LoginCommandHandler,
@@ -80,6 +81,7 @@ const handlers = [
     PrismaService,
     //helper
     JwtHelper,
+    UserHelper,
     CurrentUserService,
     //Repository
     { provide: IUserRepository, useClass: UserRepository },

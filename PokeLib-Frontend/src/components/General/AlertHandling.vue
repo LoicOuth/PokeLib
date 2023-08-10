@@ -6,9 +6,10 @@
       closable
       :text="alert.message"
       :title="alert.title"
-      :type="alert.isSuccess ? 'success' : 'error'"
+      :type="alert.type"
       density="compact"
       variant="elevated"
+      :style="{ '--animation-duration': `${alert.showtime}ms` }"
     />
   </div>
 </template>
@@ -37,7 +38,7 @@ const appDataStore = useAppData();
     bottom: 0;
     height: 5px;
     background-color: white;
-    animation: 4.8s fill-loader forwards linear;
+    animation: var(--animation-duration) fill-loader forwards linear;
   }
 }
 

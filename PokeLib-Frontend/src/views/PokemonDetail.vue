@@ -86,7 +86,7 @@ const route = useRoute();
 const { mdAndDown } = useDisplay();
 const { getPokemonFromName } = usePokemonStore();
 
-const tab = ref('one');
+const tab = ref('stat');
 const showShiny = ref(false);
 
 const pokemon = computed(() => getPokemonFromName(route.params.name.toString()));

@@ -6,6 +6,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 enum GUARD {
   AUTH_GUARD,
+  GOOGLE_ACCOUNT_GUARD,
 }
 
 const router = createRouter({
@@ -15,6 +16,9 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: () => import('../views/HomeView.vue'),
+      beforeEnter: (to) => {
+        if (Object.keys(to.query).length) return { path: to.path, query: {}, hash: to.hash };
+      },
       meta: {
         layout: AppLayout,
       },
@@ -36,18 +40,17 @@ const router = createRouter({
       },
     },
     {
-      path: '/account/edit',
-      name: 'account-edit',
-      component: () => import('../views/EditAccountView.vue'),
+      path: '/account/:pseudo',
+      name: 'account',
+      component: () => import('../views/AccountView.vue'),
       meta: {
         layout: AppLayout,
-        guards: [GUARD.AUTH_GUARD],
       },
     },
   ],
 });
 
-router.beforeEach((to) => {
+router.beforeEach((to, from) => {
   const authStore = useAuthStore();
   const appStore = useAppData();
 
@@ -58,6 +61,12 @@ router.beforeEach((to) => {
       if (authStore.connectedUser === undefined) {
         appStore.setNewAlert(new AlertBuilder('Vous devez être connecté').buildWarning());
         return '/';
+      }
+
+    if (guards.includes(GUARD.GOOGLE_ACCOUNT_GUARD))
+      if (authStore.connectedUser?.register_with_google === true) {
+        appStore.setNewAlert(new AlertBuilder('Vous avez un compte google').buildWarning());
+        return router.replace(from.fullPath);
       }
   }
 });

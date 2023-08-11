@@ -19,33 +19,29 @@ import { useAuthStore } from '@/stores/auth';
 import { usePokemonStore } from '@/stores/pokemon';
 import { ref } from 'vue';
 import { onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 
-const route = useRoute();
-const router = useRouter();
-const { getPokemons, getTypes } = usePokemonStore();
-const { getConnectedUser, loginWithGoogle } = useAuthStore();
+const { fetchPokemons, fetchTypes } = usePokemonStore();
+const { fetchConnectedUser, loginWithGoogle } = useAuthStore();
 const { fetchFinished } = useAppData();
 
 const isError = ref(false);
 
-const handleReturn = async () => {
-  await router.replace({ query: undefined });
-  await router.go(0);
+const handleReturn = () => {
+  window.location.pathname = '/';
 };
 
 onMounted(async () => {
-  await router.isReady();
+  const urlParams = new URLSearchParams(window.location.search);
+  const code = urlParams.get('code');
 
-  const calls = [getPokemons(), getTypes()];
+  const calls = [fetchPokemons(), fetchTypes()];
 
-  if (localStorage.getItem(LOCALSTORAGE.ACCESS_TOKEN)) calls.push(getConnectedUser());
+  if (localStorage.getItem(LOCALSTORAGE.ACCESS_TOKEN)) calls.push(fetchConnectedUser());
 
-  if (route.query.code) calls.push(loginWithGoogle(route.query.code.toString()));
+  if (code) calls.push(loginWithGoogle(code.toString()));
 
   try {
     await Promise.all(calls);
-
     fetchFinished();
   } catch (error) {
     isError.value = true;

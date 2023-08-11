@@ -19,8 +19,13 @@
         </div>
         <v-divider class="my-3"></v-divider>
         <v-btn prepend-icon="mdi-pokeball" variant="text" class="w-100"> Mes équipes </v-btn>
-        <v-btn prepend-icon="mdi-account-edit" variant="text" class="w-100" @click="router.push('/account/edit')">
-          Modifier mon compte
+        <v-btn
+          prepend-icon="mdi-account-circle-outline"
+          variant="text"
+          class="w-100"
+          @click="router.push(`/account/${authStore.connectedUser?.pseudo}`)"
+        >
+          Mon compte
         </v-btn>
         <v-divider class="my-3"></v-divider>
         <v-dialog v-model="logoutDialog" persistent width="auto" transition="dialog-top-transition">
@@ -52,7 +57,8 @@ const authStore = useAuthStore();
 const logoutDialog = ref(false);
 
 const handleLogout = () => {
-  authStore.resetConnection(true);
+  authStore.resetConnection();
   logoutDialog.value = false;
+  router.push('/');
 };
 </script>

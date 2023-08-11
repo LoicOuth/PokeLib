@@ -4,14 +4,12 @@
       <router-view />
     </component>
   </v-app>
-  <SplashScreen v-else />
   <AlertHandling />
 </template>
 
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import AlertHandling from './components/General/AlertHandling.vue';
-import SplashScreen from './components/General/SplashScreen.vue';
 import { useAppData } from './stores/app-data';
 
 const appDataStore = useAppData();

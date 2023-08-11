@@ -23,8 +23,7 @@
                   icon="mdi-drama-masks"
                   @click="showShiny = !showShiny"
                   v-bind="props"
-                >
-                </v-icon>
+                />
               </template>
             </v-tooltip>
           </h1>

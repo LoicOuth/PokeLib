@@ -18,9 +18,25 @@ export class UserRepository implements IUserRepository {
   getByGoogleUuid = async (uuid: string): Promise<User> =>
     await this.prismaClient.user.findUnique({ where: { google_uuid: uuid } });
 
-  getByEmail = async (email: string): Promise<User> => await this.prismaClient.user.findUnique({ where: { email } });
+  getByEmail = async (email: string, exceptId?: number): Promise<User> =>
+    await this.prismaClient.user.findFirst({
+      where: {
+        email,
+        NOT: {
+          id: exceptId || -1,
+        },
+      },
+    });
 
-  getByPseudo = async (pseudo: string): Promise<User> => await this.prismaClient.user.findFirst({ where: { pseudo } });
+  getByPseudo = async (pseudo: string, exceptId?: number): Promise<User> =>
+    await this.prismaClient.user.findFirst({
+      where: {
+        pseudo,
+        NOT: {
+          id: exceptId || -1,
+        },
+      },
+    });
 
   getOneFromEmailOrPseudo = async (username: string): Promise<User | undefined> =>
     await this.prismaClient.user.findFirst({ where: { OR: [{ email: username }, { pseudo: username }] } });
@@ -37,23 +53,46 @@ export class UserRepository implements IUserRepository {
   }
 
   async createOrUpdateFromGoogle(googleUser: GoogleUserModel): Promise<User> {
-    const data = {
-      avatar: googleUser.picture,
-      email: googleUser.email,
-      pseudo: googleUser.name,
-    };
-
-    return await this.prismaClient.user.upsert({
+    const existingUser = await this.prismaClient.user.findUnique({
       where: {
         google_uuid: googleUser.id,
       },
-      update: data,
-      create: {
-        ...data,
+    });
+
+    if (existingUser) {
+      const shouldUpdatePseudo = !existingUser.pseudo_is_edited;
+      const updateData: {
+        avatar?: string;
+        email?: string;
+        pseudo?: string;
+        pseudo_is_edited: boolean;
+      } = {
+        avatar: googleUser.picture,
+        email: googleUser.email,
+        pseudo: shouldUpdatePseudo ? googleUser.name : existingUser.pseudo,
+        pseudo_is_edited: true,
+      };
+
+      return await this.prismaClient.user.update({
+        where: {
+          google_uuid: googleUser.id,
+        },
+        data: updateData,
+      });
+    } else {
+      const newData = {
+        avatar: googleUser.picture,
+        email: googleUser.email,
+        pseudo: googleUser.name,
         registered_at: new Date(),
         google_uuid: googleUser.id,
-      },
-    });
+        pseudo_is_edited: true,
+      };
+
+      return await this.prismaClient.user.create({
+        data: newData,
+      });
+    }
   }
 
   async createUser(email: string, pseudo: string, password: string): Promise<User> {
@@ -72,4 +111,26 @@ export class UserRepository implements IUserRepository {
 
   updateUserAvatar = async (path: string, userId: number): Promise<User> =>
     await this.prismaClient.user.update({ where: { id: userId }, data: { avatar: path } });
+
+  updateUserInfos = async (pseudo: string, userId: number, email?: string): Promise<void> => {
+    await this.prismaClient.user.update({
+      where: { id: userId },
+      data: {
+        email,
+        pseudo,
+        pseudo_is_edited: true,
+      },
+    });
+  };
+
+  updateUserPassword = async (password: string, userId: number): Promise<void> => {
+    const salt = await bcrypt.genSalt();
+
+    await this.prismaClient.user.update({
+      where: { id: userId },
+      data: {
+        password: await bcrypt.hash(password, salt),
+      },
+    });
+  };
 }

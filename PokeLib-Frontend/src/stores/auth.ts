@@ -8,19 +8,17 @@ import { useAppData } from './app-data';
 import { AlertBuilder } from '@/core/builders/alert.builder';
 import { LOCALSTORAGE } from '@/core/constants';
 import { type IUser } from '@/core/interfaces/user.interface';
-import { useRouter } from 'vue-router';
 
 export const useAuthStore = defineStore('auth', () => {
   const fetch = useApi();
   const { setNewAlert } = useAppData();
-  const router = useRouter();
 
   const connectedUser = ref<IUser>();
 
   const handleLogin = async (response: ILoginReponse) => {
     localStorage.setItem(LOCALSTORAGE.ACCESS_TOKEN, response.access_token);
 
-    await getConnectedUser();
+    await fetchConnectedUser();
   };
 
   const login = async (formdata: { username: string; password: string }) => {
@@ -33,7 +31,6 @@ export const useAuthStore = defineStore('auth', () => {
     const response = await fetch.post<ILoginReponse>('auth/google', { authCode }, true);
 
     await handleLogin(response);
-    await router.replace({ params: undefined });
   };
 
   const register = async (formData: IRegisterUser) => {
@@ -45,17 +42,15 @@ export const useAuthStore = defineStore('auth', () => {
     setNewAlert(new AlertBuilder("L'enregistrement à réussi").buildSuccess());
   };
 
-  const getConnectedUser = async () => {
+  const fetchConnectedUser = async () => {
     const response = await fetch.get<IUser>('users/me');
 
     connectedUser.value = response;
   };
 
-  const resetConnection = (isLogout: boolean = false) => {
+  const resetConnection = () => {
     localStorage.clear();
     connectedUser.value = undefined;
-
-    if (isLogout) router.push('/');
   };
 
   const updateAvatar = async (file: File) => {
@@ -64,7 +59,15 @@ export const useAuthStore = defineStore('auth', () => {
 
     await fetch.put('users/me/update/avatar', form);
 
-    await getConnectedUser();
+    await fetchConnectedUser();
+  };
+
+  const updateUser = async (formData: { email: string; pseudo: string }) => {
+    await fetch.put('users/me/update', formData);
+
+    setNewAlert(new AlertBuilder('Données modifier avec succès').buildSuccess());
+
+    await fetchConnectedUser();
   };
 
   return {
@@ -72,8 +75,9 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     loginWithGoogle,
     register,
-    getConnectedUser,
+    fetchConnectedUser,
     resetConnection,
     updateAvatar,
+    updateUser,
   };
 });

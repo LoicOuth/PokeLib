@@ -36,6 +36,9 @@ import { PokemonController } from './presentation/controllers/pokemon.controller
 import { TypeController } from './presentation/controllers/type.controller';
 import { GetAllTypeQueryHandler } from './application/type/queries/get-all-type.query';
 import { UserHelper } from './application/user/helpers/user.helper';
+import { UpdateUserCommandHandler } from './application/user/commands/update-user.command';
+import { GetUserByPseudoQueryHandler } from './application/user/queries/get-user-by-pseudo.query';
+import { UpdateUserPasswordCommandHandler } from './application/user/commands/update-user-password.command';
 
 const handlers = [
   LoginCommandHandler,
@@ -45,6 +48,9 @@ const handlers = [
   GetMeQueryHandler,
   CreateUserCommandHandler,
   UpdateUserAvatarCommandHandler,
+  UpdateUserCommandHandler,
+  GetUserByPseudoQueryHandler,
+  UpdateUserPasswordCommandHandler,
   //data
   RefreshDataFromPokeapiCommandHandler,
   //pokmeon

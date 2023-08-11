@@ -29,13 +29,13 @@ export const usePokemonStore = defineStore('pokemons', () => {
     randomPokemon.value = pokemons.value[randomIndex];
   };
 
-  const getPokemons = async () => {
+  const fetchPokemons = async () => {
     const data = await fetch.get<IPokemon[]>('pokemons');
 
     pokemons.value = data;
   };
 
-  const getTypes = async () => {
+  const fetchTypes = async () => {
     const data = await fetch.get<IType[]>('types');
 
     types.value = data;
@@ -51,7 +51,7 @@ export const usePokemonStore = defineStore('pokemons', () => {
     getNextPokemon,
     getPrevPokemon,
     getTypeFromId,
-    getPokemons,
-    getTypes,
+    fetchTypes,
+    fetchPokemons,
   };
 });

@@ -5,30 +5,14 @@
         <div class="d-flex justify-space-between align-center">
           <span>Filtre</span>
           <div>
-            <v-tooltip text="Rénitialiser les filtres">
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  density="compact"
-                  variant="text"
-                  color="secondary"
-                  icon="mdi-refresh"
-                  v-bind="props"
-                  @click="resetFilter()"
-                />
-              </template>
-            </v-tooltip>
-            <v-tooltip v-if="!mdAndDown" text="Cacher les filtres">
-              <template v-slot:activator="{ props }">
-                <v-btn
-                  density="compact"
-                  variant="text"
-                  color="secondary"
-                  icon="mdi-filter-off"
-                  v-bind="props"
-                  @click="showFilter = false"
-                />
-              </template>
-            </v-tooltip>
+            <v-btn density="compact" variant="text" color="secondary" icon @click="resetFilter()">
+              <v-icon icon="mdi-refresh" />
+              <v-tooltip text="Rénitialiser les filtres" activator="parent" location="bottom" />
+            </v-btn>
+            <v-btn density="compact" variant="text" color="secondary" icon @click="showFilter = false">
+              <v-icon icon="mdi-filter-off" />
+              <v-tooltip text="Cacher les filtres" activator="parent" location="bottom" />
+            </v-btn>
           </div>
         </div>
       </template>

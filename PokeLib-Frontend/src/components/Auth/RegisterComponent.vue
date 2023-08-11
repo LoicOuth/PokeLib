@@ -1,5 +1,5 @@
 <template>
-  <GenericForm btn-label="S'enregistrer" :execute-fnc="() => handleRegiser()" @reset:form-data="resetFormData()">
+  <GenericForm btn-label="S'enregistrer" :execute-fnc="() => handleRegister()" @reset:form-data="resetFormData()">
     <v-text-field
       v-model="formData.pseudo"
       label="Entrer un pseudo"
@@ -58,7 +58,7 @@ const initialFormData = {
 
 const formData = ref({ ...initialFormData });
 
-const handleRegiser = async () => {
+const handleRegister = async () => {
   await authStore.register({ ...formData.value });
 };
 

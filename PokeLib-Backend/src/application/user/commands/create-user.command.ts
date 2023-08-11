@@ -1,6 +1,6 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsStrongPassword } from 'class-validator';
 import { IUserRepository } from 'src/application/common/ports/user-repository.port';
 import { UserHelper } from '../helpers/user.helper';
 
@@ -16,6 +16,7 @@ export class CreateUserCommand {
 
   @IsNotEmpty()
   @ApiProperty()
+  @IsStrongPassword()
   password: string;
 }
 

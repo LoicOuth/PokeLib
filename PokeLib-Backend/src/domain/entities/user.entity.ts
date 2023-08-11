@@ -8,6 +8,7 @@ export class User extends BaseEntity {
   password: string;
   avatar: string;
   role: Role;
+  pseudo_is_edited: boolean;
   google_uuid: string;
   registered_at: Date;
 

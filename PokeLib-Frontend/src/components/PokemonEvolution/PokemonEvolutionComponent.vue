@@ -1,5 +1,7 @@
 <template>
-  <div class="d-flex flex-md-row flex-column justify-space-between w-100 align-center evolution-container">
+  <div
+    class="d-flex flex-md-row flex-column justify-space-between w-100 align-center evolution-container overflow-x-auto"
+  >
     <template v-for="evolution in props.pokemon?.evolutions?.filter((el) => !el.condition)" :key="evolution.id">
       <PokemonEvolutionItem :pokemon="evolution.pokemon_evolution" />
       <v-icon icon="mdi-chevron-right" size="x-large" />

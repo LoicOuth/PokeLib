@@ -2,6 +2,7 @@ import '@mdi/font/css/materialdesignicons.css';
 import { createVuetify, type ThemeDefinition } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
+import { VBtn } from 'vuetify/components';
 import { aliases, mdi } from 'vuetify/iconsets/mdi';
 
 const myCustomDarkTheme: ThemeDefinition = {
@@ -36,4 +37,21 @@ export const vuetify = createVuetify({
   },
   components,
   directives,
+});
+
+export const liteVuetify = createVuetify({
+  theme: {
+    defaultTheme: 'myCustomDarkTheme',
+    themes: {
+      myCustomDarkTheme,
+    },
+  },
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi,
+    },
+  },
+  components: { VBtn },
 });

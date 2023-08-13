@@ -70,6 +70,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.VPS_SSH_PORT }}
           script: |
-            cd /var/www/html/PokeLib-Backend/dist && npm install --only=prod
-            cd /var/www/html/PokeLib-Frontend/dist && npm install --only=prod
+            cd /var/www/html/PokeLib-Backend/dist && npm install --omit=dev
+            cd /var/www/html/PokeLib-Backend/dist && npx prisma generate
+            cd /var/www/html/PokeLib-Frontend/dist && npm install --omit=dev
             pm2 restart pokelib-backend

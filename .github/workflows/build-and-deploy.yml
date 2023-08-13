@@ -19,17 +19,38 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install frontend dependencies
-        run: cd Pokelib-Frontend && npm install
+      - name: Create frontend .env
+        run: |
+          echo "VITE_API_URL=https://api-pokelib.barouth.fr/api" > PokeLib-Frontend/.env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> PokeLib-Frontend/.env
+          echo "VITE_GOOGLE_CLIENT_SCOPE='https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'" >> PokeLib-Frontend/.env
 
+      - name: Install frontend dependencies
+        run: cd PokeLib-Frontend && npm install
+        
       - name: Build frontend
-        run: cd Pokelib-Frontend && npm run build
+        run: cd PokeLib-Frontend && npm run build
+
+      - name: Move files
+        run: cd PokeLib-Frontend && cp package.json dist/package.json && cp .env dist/.env
+
+      - name: Create backend .env
+        run: |
+          echo "DATABASE_URL='${{ secrets.BACKEND_DATABASE_URL }}'" > PokeLib-Backend/.env
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> PokeLib-Backend/.env
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> PokeLib-Backend/.env
+          echo "GOOGLE_REDIRECT_URI=https://pokelib.barouth.fr" >> PokeLib-Backend/.env
+          echo "JWT_SECRET=${{ secrets.BACKEND_JWT_SECRET }}" >> PokeLib-Backend/.env
+          echo "JWT_EXPIRES_IN=1d" >> PokeLib-Backend/.env
 
       - name: Install backend dependencies
-        run: cd Pokelib-Backend && npm install
+        run: cd PokeLib-Backend && npm install
 
       - name: Build backend
-        run: cd Pokelib-Backend && npm run build
+        run: cd PokeLib-Backend && npm run build --only=prod
+
+      - name: Move files
+        run: cd PokeLib-Backend && cp package.json dist/package.json && cp .env dist/.env && cp -R src/infrastructure/persistence dist/infrastructure/persistence
 
       - name: Deploy artifacts
         uses: appleboy/scp-action@v0.1.4
@@ -38,7 +59,18 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.VPS_SSH_PORT }}
-          source: |
-            Pokelib-Frontend/dist/
-            Pokelib-Backend/dist/
-          target: /var/www/html
+          source: "PokeLib-Backend/dist/*, PokeLib-Frontend/dist/*"
+          target: /var/www/html/
+
+      - name: Install packages in production and restart app
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            cd /var/www/html/PokeLib-Backend/dist && npm install --omit=dev
+            cd /var/www/html/PokeLib-Backend/dist && npx prisma generate --schema infrastructure/persistence/schema.prisma && npx prisma migrate deploy --schema infrastructure/persistence/schema.prisma
+            cd /var/www/html/PokeLib-Frontend/dist && npm install --omit=dev
+            pm2 restart pokelib-backend

@@ -32,7 +32,7 @@ jobs:
         run: cd PokeLib-Frontend && npm run build
 
       - name: Move files
-        run: cd PokeLib-Frontend && cp package.json /dist/package.json && cp .env /dist/.env
+        run: cd PokeLib-Frontend && cp package.json dist/package.json && cp .env dist/.env
 
       - name: Install backend dependencies
         run: cd PokeLib-Backend && npm install
@@ -50,7 +50,7 @@ jobs:
         run: cd PokeLib-Backend && npm run build --only=prod
 
       - name: Move files
-        run: cd PokeLib-Backend && cp package.json /dist/package.json && cp .env /dist/.env
+        run: cd PokeLib-Backend && cp package.json dist/package.json && cp .env dist/.env
 
       - name: Deploy artifacts
         uses: appleboy/scp-action@v0.1.4

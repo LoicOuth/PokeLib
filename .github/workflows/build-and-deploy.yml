@@ -42,6 +42,11 @@ jobs:
           echo "GOOGLE_REDIRECT_URI=https://pokelib.barouth.fr" >> PokeLib-Backend/.env
           echo "JWT_SECRET=${{ secrets.BACKEND_JWT_SECRET }}" >> PokeLib-Backend/.env
           echo "JWT_EXPIRES_IN=1d" >> PokeLib-Backend/.env
+
+      - name: Apply all pending migrations to the database
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: ${{ secrets.REMOTE_DATABASE_URL }}
           
       - name: Build backend
         run: cd PokeLib-Backend && npm run build

@@ -31,6 +31,9 @@ jobs:
       - name: Build frontend
         run: cd PokeLib-Frontend && npm run build
 
+      - name: Move files
+        run: cd PokeLib-Frontend && cp package.json /dist/package.json && cp .env /dist/.env
+
       - name: Install backend dependencies
         run: cd PokeLib-Backend && npm install
 
@@ -44,7 +47,10 @@ jobs:
           echo "JWT_EXPIRES_IN=1d" >> PokeLib-Backend/.env
 
       - name: Build backend
-        run: cd PokeLib-Backend && npm run build
+        run: cd PokeLib-Backend && npm run build --only=prod
+
+      - name: Move files
+        run: cd PokeLib-Backend && cp package.json /dist/package.json && cp .env /dist/.env
 
       - name: Deploy artifacts
         uses: appleboy/scp-action@v0.1.4
@@ -55,3 +61,15 @@ jobs:
           port: ${{ secrets.VPS_SSH_PORT }}
           source: "PokeLib-Backend/dist/*, PokeLib-Frontend/dist/*"
           target: /var/www/html/
+
+      - name: Install packages in production and restart app
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_SSH_PORT }}
+          script: |
+            cd /var/www/html/PokeLib-Backend/dist && npm install --only=prod
+            cd /var/www/html/PokeLib-Frontend/dist && npm install --only=prod
+            pm2 restart pokelib-backend

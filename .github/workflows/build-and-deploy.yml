@@ -50,7 +50,7 @@ jobs:
         run: cd PokeLib-Backend && npm run build --only=prod
 
       - name: Move files
-        run: cd PokeLib-Backend && cp package.json dist/package.json && cp .env dist/.env
+        run: cd PokeLib-Backend && cp package.json dist/package.json && cp .env dist/.env && cp -R src/infrastructure/persistence dist/infrastructure/persistence
 
       - name: Deploy artifacts
         uses: appleboy/scp-action@v0.1.4
@@ -71,6 +71,6 @@ jobs:
           port: ${{ secrets.VPS_SSH_PORT }}
           script: |
             cd /var/www/html/PokeLib-Backend/dist && npm install --omit=dev
-            cd /var/www/html/PokeLib-Backend/dist && npx prisma generate
+            cd /var/www/html/PokeLib-Backend/dist && npx prisma generate --schema infrastructure/persistence/schema.prisma && npx prisma deploy --schema infrastructure/persistence/schema.prisma
             cd /var/www/html/PokeLib-Frontend/dist && npm install --omit=dev
             pm2 restart pokelib-backend

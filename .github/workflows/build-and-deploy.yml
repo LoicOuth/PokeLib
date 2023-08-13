@@ -38,7 +38,5 @@ jobs:
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.VPS_SSH_PORT }}
-          source: |
-            PokeLib-Frontend/dist/*
-            PokeLib-Backend/dist/*
-          target: /var/www/html
+          source: "PokeLib-Backend/dist/*, PokeLib-Frontend/dist/*"
+          target: /var/www/html/

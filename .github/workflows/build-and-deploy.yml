@@ -20,16 +20,16 @@ jobs:
           node-version: 18
 
       - name: Install frontend dependencies
-        run: cd Pokelib-Frontend && npm install
+        run: cd PokeLib-Frontend && npm install
 
       - name: Build frontend
-        run: cd Pokelib-Frontend && npm run build
+        run: cd PokeLib-Frontend && npm run build
 
       - name: Install backend dependencies
-        run: cd Pokelib-Backend && npm install
+        run: cd PokeLib-Backend && npm install
 
       - name: Build backend
-        run: cd Pokelib-Backend && npm run build
+        run: cd PokeLib-Backend && npm run build
 
       - name: Deploy artifacts
         uses: appleboy/scp-action@v0.1.4
@@ -39,6 +39,6 @@ jobs:
           key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
           port: ${{ secrets.VPS_SSH_PORT }}
           source: |
-            Pokelib-Frontend/dist/
-            Pokelib-Backend/dist/
+            PokeLib-Frontend/dist/
+            PokeLib-Backend/dist/
           target: /var/www/html

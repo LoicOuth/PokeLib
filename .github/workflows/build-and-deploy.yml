@@ -44,7 +44,7 @@ jobs:
           echo "JWT_EXPIRES_IN=1d" >> PokeLib-Backend/.env
 
       - name: Apply all pending migrations to the database
-        run: npx prisma migrate deploy
+        run: cd PokeLib-Backend && npx prisma migrate deploy
         env:
           DATABASE_URL: ${{ secrets.REMOTE_DATABASE_URL }}
           

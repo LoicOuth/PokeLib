@@ -7,18 +7,124 @@ datasource db {
    url      = env("DATABASE_URL")
 }
 
-model User {
-   id            Int      @id @default(autoincrement())
-   email         String   @unique
-   pseudo        String   @unique
-   password      String?
-   avatar        String
-   role          Role     @default(USER)
-   google_uuid   String?
-   registered_at DateTime
-}
-
 enum Role {
    ADMIN
    USER
+}
+
+model User {
+   id               Int      @id @default(autoincrement())
+   email            String   @unique
+   pseudo           String   @unique
+   password         String?
+   avatar           String
+   role             Role     @default(USER)
+   pseudo_is_edited Boolean  @default(false)
+   google_uuid      String?  @unique
+   registered_at    DateTime @default(now())
+
+   teams Team[]
+}
+
+model Team {
+   id         Int      @id @default(autoincrement())
+   name       String
+   is_public  Boolean  @default(false)
+   created_at DateTime @default(now())
+   updated_at DateTime @default(now()) @updatedAt
+   user_id    Int
+
+   user           User            @relation(fields: [user_id], references: [id])
+   pokemons_teams PokemonToTeam[]
+}
+
+model Type {
+   id          Int    @id @default(autoincrement())
+   poke_api_id Int    @unique
+   name        String @unique
+   color       String
+   sprite      String
+
+   pokemons_first  Pokemon[] @relation(name: "first_type")
+   pokemons_second Pokemon[] @relation(name: "second_type")
+}
+
+model Ability {
+   id   Int    @id @default(autoincrement())
+   name String @unique
+
+   pokemons_teams PokemonToTeam[]
+   pokemons       AbilityToPokemon[]
+}
+
+model Evolution {
+   id                   Int     @id @default(autoincrement())
+   condition            String?
+   pokemon_id           Int
+   pokemon_evolution_id Int
+
+   pokemon           Pokemon @relation(name: "pokemon_evolution", fields: [pokemon_id], references: [id])
+   pokemon_evolution Pokemon @relation(name: "pokemon_evolution_1", fields: [pokemon_evolution_id], references: [id])
+}
+
+model MegaEvolution {
+   id             Int    @id @default(autoincrement())
+   orbe           String
+   sprite_regular String
+   sprite_shiny   String
+   pokemon_id     Int
+
+   pokemon Pokemon @relation(fields: [pokemon_id], references: [id])
+}
+
+model Pokemon {
+   id             Int     @id @default(autoincrement())
+   pokedex_order  Int     @unique
+   name           String  @unique
+   description    String  @db.Text
+   height         String
+   weight         String
+   generation     Int
+   sprite_regular String
+   sprite_shiny   String?
+   sprite_gmax    String?
+   hp             Int
+   atk            Int
+   def            Int
+   spe_atk        Int
+   spe_def        Int
+   vit            Int
+   first_type_id  Int
+   second_type_id Int?
+
+   first_type        Type               @relation(name: "first_type", fields: [first_type_id], references: [id])
+   second_type       Type?              @relation(name: "second_type", fields: [second_type_id], references: [id])
+   pokemons_teams    PokemonToTeam[]
+   mega_evolutions   MegaEvolution[]
+   evolutions        Evolution[]        @relation(name: "pokemon_evolution")
+   evolutions_member Evolution[]        @relation(name: "pokemon_evolution_1")
+   abilities         AbilityToPokemon[]
+}
+
+model PokemonToTeam {
+   ability_id Int
+   pokemon_id Int
+   team_id    Int
+
+   pokemon Pokemon @relation(fields: [pokemon_id], references: [id])
+   team    Team    @relation(fields: [team_id], references: [id])
+   ability Ability @relation(fields: [ability_id], references: [id])
+
+   @@id([pokemon_id, team_id])
+}
+
+model AbilityToPokemon {
+   is_hidden  Boolean
+   ability_id Int
+   pokemon_id Int
+
+   ability Ability @relation(fields: [ability_id], references: [id])
+   pokemon Pokemon @relation(fields: [pokemon_id], references: [id])
+
+   @@id([pokemon_id, ability_id])
 }

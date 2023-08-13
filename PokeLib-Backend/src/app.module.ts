@@ -9,7 +9,7 @@ import { HttpModule } from '@nestjs/axios';
 import { PrismaService } from './infrastructure/adapter/prisma.service';
 import { IUserRepository } from './application/common/ports/user-repository.port';
 import { IGoogleAuth } from './application/common/ports/google-auth.port';
-import { UserRepository } from './infrastructure/repositories/user-repository.service';
+import { UserRepository } from './infrastructure/repositories/user.repository';
 import { GoogleAuthService } from './infrastructure/google-auth/google-auth.service';
 import { IEnvironmentConfig } from './application/common/interfaces/environment.interface';
 import { LoginWithGoogleCommandHandler } from './application/auth/commands/login-with-google.command';
@@ -21,6 +21,24 @@ import { UpdateUserAvatarCommandHandler } from './application/user/commands/upda
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { LoginCommandHandler } from './application/auth/commands/login.command';
+import { IPokeapiData } from './application/common/ports/pokeapi-data.port';
+import { PokeapiData } from './infrastructure/pokeapi/pokeapi-data.service';
+import { RefreshDataFromPokeapiCommandHandler } from './application/pokeapi/commands/refresh-data-from-pokeapi.command';
+import { DataController } from './presentation/controllers/data.controller';
+import { AbilityRepository } from './infrastructure/repositories/ability.repository';
+import { IAbilityRepository } from './application/common/ports/ability-repository.port';
+import { ITypeRepository } from './application/common/ports/type-repository.port';
+import { TypeRepository } from './infrastructure/repositories/type.repository';
+import { IPokemonRepository } from './application/common/ports/pokemon-repository.port';
+import { PokemonRepository } from './infrastructure/repositories/pokemon.repository';
+import { GetAllPokemonQueryHandler } from './application/pokemon/queries/get-all-pokemon.query';
+import { PokemonController } from './presentation/controllers/pokemon.controller';
+import { TypeController } from './presentation/controllers/type.controller';
+import { GetAllTypeQueryHandler } from './application/type/queries/get-all-type.query';
+import { UserHelper } from './application/user/helpers/user.helper';
+import { UpdateUserCommandHandler } from './application/user/commands/update-user.command';
+import { GetUserByPseudoQueryHandler } from './application/user/queries/get-user-by-pseudo.query';
+import { UpdateUserPasswordCommandHandler } from './application/user/commands/update-user-password.command';
 
 const handlers = [
   LoginCommandHandler,
@@ -30,6 +48,15 @@ const handlers = [
   GetMeQueryHandler,
   CreateUserCommandHandler,
   UpdateUserAvatarCommandHandler,
+  UpdateUserCommandHandler,
+  GetUserByPseudoQueryHandler,
+  UpdateUserPasswordCommandHandler,
+  //data
+  RefreshDataFromPokeapiCommandHandler,
+  //pokmeon
+  GetAllPokemonQueryHandler,
+  //Type
+  GetAllTypeQueryHandler,
 ];
 
 @Module({
@@ -53,18 +80,23 @@ const handlers = [
       serveRoot: '/uploads/images',
     }),
   ],
-  controllers: [UserController, AuthController],
+  controllers: [UserController, AuthController, DataController, PokemonController, TypeController],
   providers: [
     ...handlers,
     //Service
     PrismaService,
     //helper
     JwtHelper,
+    UserHelper,
     CurrentUserService,
     //Repository
     { provide: IUserRepository, useClass: UserRepository },
+    { provide: IAbilityRepository, useClass: AbilityRepository },
+    { provide: ITypeRepository, useClass: TypeRepository },
+    { provide: IPokemonRepository, useClass: PokemonRepository },
     // Other
     { provide: IGoogleAuth, useClass: GoogleAuthService },
+    { provide: IPokeapiData, useClass: PokeapiData },
   ],
 })
 export class AppModule {}

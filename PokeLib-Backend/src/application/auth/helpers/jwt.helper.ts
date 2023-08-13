@@ -2,10 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginResponseDto } from '../dtos/login-response.dto';
 import { User } from 'src/domain/entities/user.entity';
+import { ConfigService } from '@nestjs/config';
+import { IEnvironmentConfig } from 'src/application/common/interfaces/environment.interface';
 
 @Injectable()
 export class JwtHelper {
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService, private readonly config: ConfigService<IEnvironmentConfig>) {}
 
   async generateNewToken(user: User): Promise<LoginResponseDto> {
     const payload = {
@@ -17,6 +19,10 @@ export class JwtHelper {
       },
     };
 
-    return new LoginResponseDto(await this.jwtService.signAsync(payload));
+    return new LoginResponseDto(
+      await this.jwtService.signAsync(payload, {
+        expiresIn: this.config.get<string>('JWT_EXPIRES_IN'),
+      }),
+    );
   }
 }

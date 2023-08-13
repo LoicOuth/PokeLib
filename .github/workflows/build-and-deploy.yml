@@ -22,11 +22,37 @@ jobs:
       - name: Install frontend dependencies
         run: cd PokeLib-Frontend && npm install
 
+      - name: Create frontend .env
+        run: |
+          echo "VITE_API_URL=${{ secrets.FRONTEND_API_URL }}" > PokeLib-Frontend/.env
+          echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.FRONTEND_GOOGLE_CLIENT_ID }}" >> PokeLib-Frontend/.env
+          echo "VITE_GOOGLE_CLIENT_SCOPE=${{ secrets.FRONTEND_GOOGLE_CLIENT_SCOPE }}" >> PokeLib-Frontend/.env
+        env:
+          FRONTEND_VITE_API_URL: ${{ secrets.FRONTEND_API_URL }}
+          FRONTEND_VITE_GOOGLE_CLIENT_ID: ${{ secrets.FRONTEND_GOOGLE_CLIENT_ID }}
+          FRONTEND_VITE_GOOGLE_CLIENT_SCOPE: ${{ secrets.FRONTEND_GOOGLE_CLIENT_SCOPE }}
+
       - name: Build frontend
         run: cd PokeLib-Frontend && npm run build
 
       - name: Install backend dependencies
         run: cd PokeLib-Backend && npm install
+
+      - name: Create backend .env
+        run: |
+          echo "DATABASE_URL=${{ secrets.BACKEND_DATABASE_URL }}" > PokeLib-Backend/.env
+          echo "GOOGLE_CLIENT_ID=${{ secrets.BACKEND_GOOGLE_CLIENT_ID }}" >> PokeLib-Backend/.env
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.BACKEND_GOOGLE_CLIENT_SECRET }}" >> PokeLib-Backend/.env
+          echo "GOOGLE_REDIRECT_URI=${{ secrets.BACKEND_GOOGLE_REDIRECT_URI }}" >> PokeLib-Backend/.env
+          echo "JWT_SECRET=${{ secrets.BACKEND_JWT_SECRET }}" >> PokeLib-Backend/.env
+          echo "JWT_EXPIRES_IN=${{ secrets.BACKEND_JWT_EXPIRES_IN }}" >> PokeLib-Backend/.env
+        env:
+          BACKEND_DATABASE_URL: ${{ secrets.BACKEND_DATABASE_URL }}
+          BACKEND_GOOGLE_CLIENT_ID: ${{ secrets.BACKEND_GOOGLE_CLIENT_ID }}
+          BACKEND_GOOGLE_CLIENT_SECRET: ${{ secrets.BACKEND_GOOGLE_CLIENT_SECRET }}
+          BACKEND_GOOGLE_REDIRECT_URI: ${{ secrets.BACKEND_GOOGLE_REDIRECT_URI }}
+          BACKEND_JWT_SECRET: ${{ secrets.BACKEND_JWT_SECRET }}
+          BACKEND_JWT_EXPIRES_IN: ${{ secrets.BACKEND_JWT_EXPIRES_IN }}
 
       - name: Build backend
         run: cd PokeLib-Backend && npm run build

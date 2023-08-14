@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex flex-column ma-md-10 ma-2 home-container">
+  <div class="d-flex flex-column ma-md-14 ma-2 home-container">
     <h1 class="text-h2 text-center">Bienvenue sur Pokemon library</h1>
 
     <div v-if="pokemonStore.randomPokemon" class="d-flex flex-md-row flex-column-reverse">
@@ -53,6 +53,13 @@
     </div>
 
     <div>
+      <a href="#next" class="d-flex flex-column align-center next">
+        <h1 class="text-h4">Cliquer pour en savoir plus</h1>
+        <v-icon icon="mdi-chevron-down" size="50" />
+      </a>
+    </div>
+
+    <div id="next">
       <TeamSystem />
     </div>
 
@@ -64,46 +71,8 @@
       <PartnairSection />
     </div>
   </div>
-  <v-footer elevation="3" class="pa-5" style="margin-top: 5em">
-    <div class="w-100">
-      <v-row class="pa-5">
-        <v-col cols="12" md="4">
-          <img src="/logo.png" height="80" />
-        </v-col>
-        <v-col cols="12" md="4">
-          <h3 class="font-weight-bold text-h5">Informations</h3>
-          <ul class="text-h6">
-            <li>
-              <a href="/rgpd" target="_blank" class="text-primary text-decoration-none">Politique de Confidentialité</a>
-            </li>
-          </ul>
-        </v-col>
-        <v-col cols="12" md="4">
-          <h3 class="font-weight-bold text-h5">Retrouvez-nous</h3>
-          <ul class="text-h6">
-            <li>
-              <a href="https://github.com/LoicOuth/PokeLib" target="_blank" class="text-primary text-decoration-none"
-                >GitHub</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://www.linkedin.com/in/lo%C3%AFc-outhier-508329180/"
-                target="_blank"
-                class="text-primary text-decoration-none"
-                >Linkedin</a
-              >
-            </li>
-          </ul>
-        </v-col>
-      </v-row>
-      <v-divider></v-divider>
-      <p class="mt-5">
-        &copy; 2023 Pokemon Library. Tous droits réservés. Pokémon est une marque déposée de Nintendo, Game Freak et
-        Creatures Inc.
-      </p>
-    </div>
-  </v-footer>
+
+  <FooterComponent />
 </template>
 
 <script setup lang="ts">
@@ -116,6 +85,7 @@ import { getBackgroundColor } from '@/utils/color.util';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
+import FooterComponent from '@/components/General/FooterComponent.vue';
 
 const pokemonStore = usePokemonStore();
 const { mdAndDown } = useDisplay();
@@ -138,11 +108,14 @@ onMounted(() => {
   }
 }
 
-li {
-  list-style-type: none;
+.next {
+  text-decoration: none;
+  color: white;
 
-  & > a:hover {
-    text-decoration: underline !important;
+  &:hover {
+    & > i {
+      animation: bounce 1s;
+    }
   }
 }
 </style>

@@ -1,32 +1,34 @@
 <template>
-  <div class="d-flex flex-md-row flex-column w-100">
-    <div class="w-50 pa-10 tech" :class="width">
-      <h1>La stack technique</h1>
-      <v-divider color="white" />
-
-      <h2 class="">{{ currentTech.name }}</h2>
-
-      <p>{{ currentTech.description }}</p>
-
-      <span
-        >Source : <a :href="currentTech.source" target="_blank">{{ currentTech.source }}</a></span
-      >
-    </div>
-    <v-carousel v-model="tab" cycle hide-delimiters show-arrows="hover" :class="width">
-      <v-carousel-item v-for="(tech, index) in technologies" :key="index" :src="tech.logo" />
-    </v-carousel>
-  </div>
+  <h1>La stack technique</h1>
+  <v-divider color="white" />
+  <v-window v-model="tab" show-arrows class="w-100">
+    <v-window-item v-for="(tech, index) in technologies" :key="index" class="pa-10">
+      <div class="w-100 d-flex justify-center">
+        <v-card class="pa-10" :class="mdAndDown ? 'w-100' : 'w-75'">
+          <v-img :src="tech.logo" height="100px" />
+          <v-card-title>
+            <h3>{{ tech.name }}</h3>
+          </v-card-title>
+          <v-card-text :style="{ height: mdAndDown ? 'auto' : '150px' }">
+            <p class="text-body-1">
+              {{ tech.description }}
+            </p>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="secondary" variant="text" :href="tech.source" target="_blank">Visiter {{ tech.name }}</v-btn>
+          </v-card-actions>
+        </v-card>
+      </div>
+    </v-window-item>
+  </v-window>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { ref } from 'vue';
 import { useDisplay } from 'vuetify';
 const { mdAndDown } = useDisplay();
 
 const tab = ref(0);
-
-const currentTech = computed(() => technologies.value[tab.value]);
-const width = computed(() => (mdAndDown ? 'w-100' : 'w-50'));
 
 const technologies = ref([
   {
@@ -66,23 +68,3 @@ const technologies = ref([
   },
 ]);
 </script>
-
-<style scoped lang="scss">
-.tech {
-  & > h2 {
-    text-align: center;
-    margin-top: 1em;
-    margin-bottom: 1em;
-  }
-
-  & > p {
-    font-size: 20px;
-    text-align: justify;
-  }
-
-  & > span {
-    display: inline-block;
-    margin-top: 1em;
-  }
-}
-</style>

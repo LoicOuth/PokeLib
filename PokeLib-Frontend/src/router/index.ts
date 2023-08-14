@@ -47,6 +47,14 @@ const router = createRouter({
         layout: AppLayout,
       },
     },
+    {
+      path: '/rgpd',
+      name: 'rgpd',
+      component: () => import('../views/RgpdView.vue'),
+      meta: {
+        layout: AppLayout,
+      },
+    },
   ],
 });
 

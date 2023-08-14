@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="loginDialog" transition="dialog-top-transition" width="30vw">
+  <v-dialog v-model="loginDialog" transition="dialog-top-transition" :width="mdAndDown ? '100vw' : '30vw'">
     <template v-slot:activator="{ props }">
       <v-btn v-if="!mdAndDown" color="secondary" variant="flat" prepend-icon="mdi-login" v-bind="props">
         Se connecter

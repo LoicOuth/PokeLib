@@ -18,6 +18,7 @@
       variant="tonal"
       :loading="loading"
       @click="handleExecute()"
+      :disabled="btnDisable"
     >
       {{ btnLabel }}
     </v-btn>
@@ -32,6 +33,7 @@ import { ValidationError } from '@/core/models/pokelib-error.model';
 
 const props = defineProps({
   btnLabel: { type: String, required: true },
+  btnDisable: { type: Boolean, required: false, default: false },
   executeFnc: { type: Function, required: true },
 });
 

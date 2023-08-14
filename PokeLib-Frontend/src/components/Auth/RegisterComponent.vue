@@ -1,5 +1,10 @@
 <template>
-  <GenericForm btn-label="S'enregistrer" :execute-fnc="() => handleRegister()" @reset:form-data="resetFormData()">
+  <GenericForm
+    btn-label="S'enregistrer"
+    :execute-fnc="() => handleRegister()"
+    @reset:form-data="resetFormData()"
+    :btn-disable="!isChecked"
+  >
     <v-text-field
       v-model="formData.pseudo"
       label="Entrer un pseudo"
@@ -34,6 +39,15 @@
       @click:append-inner="visibleConfirmation = !visibleConfirmation"
       variant="outlined"
     />
+
+    <v-checkbox class="w-100" v-model="isChecked">
+      <template #label>
+        <div>
+          <p class="checkbox-label">J'accepte</p>
+          <a href="/rgpd" target="_blank">la politique sur la protection des données</a>
+        </div>
+      </template>
+    </v-checkbox>
   </GenericForm>
 </template>
 
@@ -48,6 +62,7 @@ const authStore = useAuthStore();
 
 const visible = ref(false);
 const visibleConfirmation = ref(false);
+const isChecked = ref(false);
 
 const initialFormData = {
   pseudo: '',
@@ -67,3 +82,10 @@ const resetFormData = () => {
   emits('goToLogin');
 };
 </script>
+
+<style scoped lang="scss">
+.checkbox-label {
+  display: inline-block;
+  margin-right: 2px;
+}
+</style>

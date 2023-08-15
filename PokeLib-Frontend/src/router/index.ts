@@ -48,6 +48,22 @@ const router = createRouter({
       },
     },
     {
+      path: '/account/myteams',
+      name: 'my-teams',
+      component: () => import('../views/MyTeamsView.vue'),
+      meta: {
+        layout: AppLayout,
+      },
+    },
+    {
+      path: '/account/myteams/:teamId',
+      name: 'edit-team',
+      component: () => import('../views/EditTeamView.vue'),
+      meta: {
+        layout: AppLayout,
+      },
+    },
+    {
       path: '/rgpd',
       name: 'rgpd',
       component: () => import('../views/RgpdView.vue'),

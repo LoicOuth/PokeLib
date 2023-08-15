@@ -18,12 +18,12 @@
           </p>
         </div>
         <v-divider class="my-3"></v-divider>
-        <v-btn prepend-icon="mdi-pokeball" variant="text" class="w-100"> Mes équipes </v-btn>
+        <v-btn prepend-icon="mdi-pokeball" variant="text" class="w-100" to="/account/myteams"> Mes équipes </v-btn>
         <v-btn
           prepend-icon="mdi-account-circle-outline"
           variant="text"
           class="w-100"
-          @click="router.push(`/account/${authStore.connectedUser?.pseudo}`)"
+          :to="`/account/${authStore.connectedUser?.pseudo}`"
         >
           Mon compte
         </v-btn>

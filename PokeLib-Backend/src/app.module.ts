@@ -39,6 +39,12 @@ import { UserHelper } from './application/user/helpers/user.helper';
 import { UpdateUserCommandHandler } from './application/user/commands/update-user.command';
 import { GetUserByPseudoQueryHandler } from './application/user/queries/get-user-by-pseudo.query';
 import { UpdateUserPasswordCommandHandler } from './application/user/commands/update-user-password.command';
+import { GetPublicTeamsQueryHandler } from './application/teams/queries/get-public-teams.query';
+import { TeamController } from './presentation/controllers/team.controller';
+import { ITeamsRepository } from './application/common/ports/teams-repository.port';
+import { TeamRepository } from './infrastructure/repositories/teams.repository';
+import { CreateTeamCommandHandler } from './application/teams/commands/create-team.command';
+import { GetOneTeamQueryHandler } from './application/teams/queries/get-one-team.query';
 
 const handlers = [
   LoginCommandHandler,
@@ -57,6 +63,10 @@ const handlers = [
   GetAllPokemonQueryHandler,
   //Type
   GetAllTypeQueryHandler,
+  //Teams
+  GetOneTeamQueryHandler,
+  GetPublicTeamsQueryHandler,
+  CreateTeamCommandHandler,
 ];
 
 @Module({
@@ -80,7 +90,7 @@ const handlers = [
       serveRoot: '/uploads/images',
     }),
   ],
-  controllers: [UserController, AuthController, DataController, PokemonController, TypeController],
+  controllers: [UserController, AuthController, DataController, PokemonController, TypeController, TeamController],
   providers: [
     ...handlers,
     //Service
@@ -94,6 +104,7 @@ const handlers = [
     { provide: IAbilityRepository, useClass: AbilityRepository },
     { provide: ITypeRepository, useClass: TypeRepository },
     { provide: IPokemonRepository, useClass: PokemonRepository },
+    { provide: ITeamsRepository, useClass: TeamRepository },
     // Other
     { provide: IGoogleAuth, useClass: GoogleAuthService },
     { provide: IPokeapiData, useClass: PokeapiData },

@@ -1,14 +1,14 @@
 <template>
-  <div class="d-flex flex-md-row flex-column w-75 justify-center" :class="mdAndDown ? 'w-100' : 'w-75'">
+  <div class="d-flex flex-md-row flex-column justify-center" :style="{ width: mdAndDown ? '100%' : props.width }">
     <PokemonListFilter @update:filtered-pokemons="(e: IPokemon[]) => (filtredPokemons = e)">
       <h3>Nombre de pokemon : {{ filtredPokemons.length }}</h3>
     </PokemonListFilter>
-    <div :class="mdAndDown ? 'w-100' : 'w-75'">
+    <div :style="{ width: mdAndDown ? '100%' : props.width }">
       <h1 v-if="filtredPokemons.length <= 0" class="text-center">Aucun pokemon trouvé</h1>
       <v-virtual-scroll
         v-else
         ref="virtual"
-        height="calc(100vh - 64px)"
+        :height="`calc(100vh - ${props.height})`"
         :items="filtredPokemons"
         v-scroll.self="onScroll"
         style="scroll-behavior: smooth"
@@ -41,6 +41,11 @@ import type { IPokemon } from '@/core/interfaces/pokemon.interface';
 import { useDisplay } from 'vuetify';
 import GoToTop from '../General/GoToTop.vue';
 
+const props = defineProps({
+  height: { type: String, required: false, default: '64px' },
+  width: { type: String, required: false, default: '75%' },
+});
+
 const { pokemons } = usePokemonStore();
 const { mdAndDown } = useDisplay();
 const router = useRouter();
@@ -63,7 +68,7 @@ const onScroll = (e: any) => {
     content: '';
     position: absolute;
     height: 100%;
-    width: 15%;
+    width: 10em;
     background: var(--bg);
     transition: all 300ms;
     left: 0px;

@@ -8,6 +8,7 @@ import { Pagination } from '../pagination';
 @Injectable()
 export class TeamRepository implements ITeamsRepository {
   constructor(private readonly prismaClient: PrismaService) {}
+
   getOne = async (teamId: number): Promise<Team> =>
     await this.prismaClient.team.findUnique({
       where: { id: teamId },
@@ -62,6 +63,10 @@ export class TeamRepository implements ITeamsRepository {
         user_id: userId,
       },
     });
+
+  updateName = async (teamId: number, name: string): Promise<void> => {
+    await this.prismaClient.team.update({ where: { id: teamId }, data: { name } });
+  };
 
   private countTeams = async () => await this.prismaClient.team.count();
 }

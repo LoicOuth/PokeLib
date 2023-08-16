@@ -2,7 +2,7 @@
   <div v-if="teamStore.team">
     <v-toolbar color="primary">
       <template #title>
-        <span contenteditable @input="(e) => (teamStore.team!.name = (e.target! as any).innerText)">{{
+        <span contenteditable @input="(e) => teamStore.updateName((e.target! as any).innerText)">{{
           teamStore.team.name
         }}</span>
       </template>
@@ -10,9 +10,14 @@
         <v-icon icon="mdi-pokeball" />
       </template>
       <template #append>
-        <v-tooltip text="Team is sync" location="bottom">
+        <v-tooltip v-if="!teamStore.websocketError" text="Team is sync" location="bottom">
           <template #activator="{ props }">
             <v-icon icon="mdi-web-check" color="#006400" size="x-large" v-bind="props" />
+          </template>
+        </v-tooltip>
+        <v-tooltip v-else text="Team is not sync" location="bottom">
+          <template #activator="{ props }">
+            <v-icon icon="mdi-web-remove" color="error" size="x-large" v-bind="props" />
           </template>
         </v-tooltip>
       </template>

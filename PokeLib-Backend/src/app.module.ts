@@ -45,6 +45,8 @@ import { ITeamsRepository } from './application/common/ports/teams-repository.po
 import { TeamRepository } from './infrastructure/repositories/teams.repository';
 import { CreateTeamCommandHandler } from './application/teams/commands/create-team.command';
 import { GetOneTeamQueryHandler } from './application/teams/queries/get-one-team.query';
+import { TeamGateway } from './presentation/gateways/team.gateway';
+import { UpdateNameTeamCommandHandler } from './application/teams/commands/update-name-team.command';
 
 const handlers = [
   LoginCommandHandler,
@@ -67,6 +69,7 @@ const handlers = [
   GetOneTeamQueryHandler,
   GetPublicTeamsQueryHandler,
   CreateTeamCommandHandler,
+  UpdateNameTeamCommandHandler,
 ];
 
 @Module({
@@ -105,6 +108,10 @@ const handlers = [
     { provide: ITypeRepository, useClass: TypeRepository },
     { provide: IPokemonRepository, useClass: PokemonRepository },
     { provide: ITeamsRepository, useClass: TeamRepository },
+
+    //Gateways
+    TeamGateway,
+
     // Other
     { provide: IGoogleAuth, useClass: GoogleAuthService },
     { provide: IPokeapiData, useClass: PokeapiData },

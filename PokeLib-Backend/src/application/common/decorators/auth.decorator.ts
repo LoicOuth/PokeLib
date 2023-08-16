@@ -4,5 +4,12 @@ import { AuthGuard } from '../guards/auth.guard';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 export const ROLES_KEY = 'roles';
-export const Auth = (role?: Role) =>
-  applyDecorators(SetMetadata(ROLES_KEY, role), UseGuards(AuthGuard), ApiBearerAuth());
+export const IS_WEBSOCKET_REQUEST = 'is_websocket';
+
+export const Auth = (role?: Role, isWs = false) =>
+  applyDecorators(
+    SetMetadata(ROLES_KEY, role),
+    SetMetadata(IS_WEBSOCKET_REQUEST, isWs),
+    UseGuards(AuthGuard),
+    ApiBearerAuth(),
+  );

@@ -6,4 +6,5 @@ export abstract class ITeamsRepository {
   abstract getPaginated(page: number, take: number): Promise<IPagination<Team>>;
   abstract getPaginatedFromUserId(page: number, take: number, userId: number): Promise<IPagination<Team>>;
   abstract create(userId: number): Promise<Team>;
+  abstract updateName(teamId: number, name: string): Promise<void>;
 }

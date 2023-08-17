@@ -47,6 +47,8 @@ import { CreateTeamCommandHandler } from './application/teams/commands/create-te
 import { GetOneTeamQueryHandler } from './application/teams/queries/get-one-team.query';
 import { TeamGateway } from './presentation/gateways/team.gateway';
 import { UpdateNameTeamCommandHandler } from './application/teams/commands/update-name-team.command';
+import { AddPokemonToTeamCommandHandler } from './application/teams/commands/add-pokemon-to-team.command';
+import { DeletePokemonToTeamCommandHandler } from './application/teams/commands/delete-pokemon-to-team.command';
 
 const handlers = [
   LoginCommandHandler,
@@ -70,6 +72,8 @@ const handlers = [
   GetPublicTeamsQueryHandler,
   CreateTeamCommandHandler,
   UpdateNameTeamCommandHandler,
+  AddPokemonToTeamCommandHandler,
+  DeletePokemonToTeamCommandHandler,
 ];
 
 @Module({

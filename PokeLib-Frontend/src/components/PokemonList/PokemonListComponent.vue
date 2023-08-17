@@ -17,7 +17,7 @@
           <div
             class="d-flex pokemon pa-5 align-center rounded-lg elevation-3 ma-5"
             :style="{ '--bg': getBackgroundColor(pokemon.first_type_id, pokemon.second_type_id) }"
-            @click="router.push(`/pokedex/${pokemon.name}`)"
+            @click="props.navigate ? router.push(`/pokedex/${pokemon.name}`) : emits('cardClick', pokemon)"
           >
             <img :src="pokemon.sprite_regular" />
             <h1 class="ml-10">{{ pokemon.name }}</h1>
@@ -41,9 +41,12 @@ import type { IPokemon } from '@/core/interfaces/pokemon.interface';
 import { useDisplay } from 'vuetify';
 import GoToTop from '../General/GoToTop.vue';
 
+const emits = defineEmits(['cardClick']);
+
 const props = defineProps({
   height: { type: String, required: false, default: '64px' },
   width: { type: String, required: false, default: '75%' },
+  navigate: { type: Boolean, required: false, default: true },
 });
 
 const { pokemons } = usePokemonStore();

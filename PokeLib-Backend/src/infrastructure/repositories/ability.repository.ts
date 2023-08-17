@@ -18,4 +18,12 @@ export class AbilityRepository implements IAbilityRepository {
       create: data,
     });
   };
+
+  getRandomlyFromPokemon = async (pokemonId: number): Promise<Ability> => {
+    const abilities = await this.prismaClient.ability.findMany({
+      where: { pokemons: { some: { pokemon_id: pokemonId } } },
+    });
+
+    return abilities[Math.floor(Math.random() * abilities.length)];
+  };
 }

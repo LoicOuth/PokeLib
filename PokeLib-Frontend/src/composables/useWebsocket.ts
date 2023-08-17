@@ -7,7 +7,7 @@ import { AlertBuilder } from '@/core/builders/alert.builder';
 
 export const useWebsocket = () => {
   const { getWebsocketUrl } = useConfig();
-  const {setNewAlert} = useAppData()
+  const { setNewAlert } = useAppData();
 
   const state = reactive({
     connected: false,
@@ -15,49 +15,56 @@ export const useWebsocket = () => {
     teamId: '',
   });
 
- let timeout: null | number = null
+  let timeout: null | number = null;
 
   const socket = io(getWebsocketUrl(), {
     auth: {
       token: localStorage.getItem(LOCALSTORAGE.ACCESS_TOKEN),
     },
     autoConnect: false,
-
   });
 
   socket.on('connect', () => {
     state.connected = true;
 
-    socket.emit('join:room', state.teamId);
+    if (state.teamId.length > 0) socket.emit('join:room', state.teamId);
   });
 
   socket.on('disconnect', () => {
     state.connected = false;
   });
 
-  socket.on('exception', (e: {message: string, status: string}) => {
-
-    if(timeout)
-      clearTimeout(timeout)
+  socket.on('exception', (e: { message: string; status: string }) => {
+    if (timeout) clearTimeout(timeout);
 
     timeout = setTimeout(() => {
-    setNewAlert(new AlertBuilder(e.message).buildError())
-    state.onError = true
-
-    }, 500)
-  })
+      setNewAlert(new AlertBuilder(e.message).buildError());
+      state.onError = true;
+    }, 500);
+  });
 
   socket.onAny(() => {
-    state.onError = false
-  })
+    state.onError = false;
+  });
+
+  const connect = (teamId: string = '') => {
+    state.teamId = teamId;
+
+    socket.connect();
+  };
+
+  const emit = (event: string, body: object) => {
+    if (state.teamId.length > 0) socket.emit(event, state.teamId, body);
+  };
 
   const setTeamId = (teamId: number) => {
     state.teamId = teamId.toString();
   };
 
   return {
-    socket,
     state,
     setTeamId,
+    connect,
+    emit,
   };
 };

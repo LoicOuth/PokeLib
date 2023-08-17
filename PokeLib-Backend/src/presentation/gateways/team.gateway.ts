@@ -11,10 +11,14 @@ import { Auth } from 'src/application/common/decorators/auth.decorator';
 import { CurrentUserService } from 'src/application/common/services/current-user.service';
 import { UpdateNameTeamCommand } from 'src/application/teams/commands/update-name-team.command';
 import { DefaultRequest } from './request/common/default.request';
+import { AddPokemonToTeamCommand } from 'src/application/teams/commands/add-pokemon-to-team.command';
+import { DeletePokemonToTeamCommand } from 'src/application/teams/commands/delete-pokemon-to-team.command';
 
 const TeamEvent = {
   JOIN_ROOM: 'join:room',
   UPDATE_NAME: 'update:name',
+  ADD_POKEMON: 'add:pokemon',
+  DELETE_POKEMIN: 'delete:pokemon',
 };
 
 @WebSocketGateway({ namespace: 'team', cors: '*' })
@@ -40,6 +44,26 @@ export class TeamGateway implements OnGatewayConnection {
     const command = new UpdateNameTeamCommand();
     command.teamId = parseInt(roomId);
     command.name = body.name;
+
+    await this.commandBus.execute(command);
+  }
+
+  @Auth(undefined, true)
+  @SubscribeMessage(TeamEvent.DELETE_POKEMIN)
+  async handleDeletePokemon(@MessageBody() [roomId, body]: DefaultRequest<{ pokemonId: number }>) {
+    const command = new DeletePokemonToTeamCommand();
+    command.teamId = parseInt(roomId);
+    command.pokemonId = body.pokemonId;
+
+    await this.commandBus.execute(command);
+  }
+
+  @Auth(undefined, true)
+  @SubscribeMessage(TeamEvent.ADD_POKEMON)
+  async handleAddPokemon(@MessageBody() [roomId, body]: DefaultRequest<{ pokemonId: number }>) {
+    const command = new AddPokemonToTeamCommand();
+    command.teamId = parseInt(roomId);
+    command.pokemonId = body.pokemonId;
 
     await this.commandBus.execute(command);
   }

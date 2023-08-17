@@ -68,5 +68,30 @@ export class TeamRepository implements ITeamsRepository {
     await this.prismaClient.team.update({ where: { id: teamId }, data: { name } });
   };
 
+  addPokemon = async (teamId: number, pokemonId: number, abilityid: number): Promise<void> => {
+    await this.prismaClient.team.update({
+      where: { id: teamId },
+      data: {
+        pokemons_teams: {
+          create: {
+            pokemon_id: pokemonId,
+            ability_id: abilityid,
+          },
+        },
+      },
+    });
+  };
+
+  deletePokemon = async (teamId: number, pokemonId: number): Promise<void> => {
+    await this.prismaClient.pokemonToTeam.delete({
+      where: {
+        pokemon_id_team_id: {
+          pokemon_id: pokemonId,
+          team_id: teamId,
+        },
+      },
+    });
+  };
+
   private countTeams = async () => await this.prismaClient.team.count();
 }

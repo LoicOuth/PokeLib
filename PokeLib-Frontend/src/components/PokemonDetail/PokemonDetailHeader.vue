@@ -46,14 +46,15 @@ import { useDisplay } from 'vuetify';
 const props = defineProps({
   pokemon: { type: Object as PropType<IPokemon>, required: true },
   showShiny: { type: Boolean, required: true },
+  showNextAndPrev: { type: Boolean, required: false, default: true },
 });
 
 const { getNextPokemon, getPrevPokemon } = usePokemonStore();
 const router = useRouter();
 const { mdAndDown } = useDisplay();
 
-const nextPokemon = computed(() => getNextPokemon(props.pokemon.id));
-const prevPokemon = computed(() => getPrevPokemon(props.pokemon.id));
+const nextPokemon = computed(() => (props.showNextAndPrev ? getNextPokemon(props.pokemon.id) : undefined));
+const prevPokemon = computed(() => (props.showNextAndPrev ? getPrevPokemon(props.pokemon.id) : undefined));
 
 const imgSize = computed(() => (mdAndDown.value ? '100' : '150'));
 const defaultImgSize = computed(() => (mdAndDown.value ? '150' : '250'));

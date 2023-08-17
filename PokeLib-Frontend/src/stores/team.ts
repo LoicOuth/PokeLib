@@ -12,22 +12,38 @@ export const useTeamStore = defineStore('teams', () => {
   const fetchTeam = async (id: string) => {
     const data = await fetch.get<ITeam>(`teams/${id}`);
 
-    console.log('test');
-
     team.value = data;
-    websocket.setTeamId(data.id);
-    websocket.socket.connect();
+    websocket.connect(data.id.toString());
   };
 
   const updateName = (name: string) => {
     team.value!.name = name;
-    websocket.socket.emit('update:name', team.value?.id.toString(), { name });
+    websocket.emit('update:name', { name });
+  };
+
+  const addNewPokemon = (pokemonId: number) => {
+    team.value!.pokemons_teams?.push({
+      pokemon_id: pokemonId,
+    });
+
+    websocket.emit('add:pokemon', { pokemonId });
+  };
+
+  const deletePokemon = (pokemonId: number) => {
+    const index = team.value!.pokemons_teams?.findIndex((el) => el.pokemon_id === pokemonId);
+
+    if (index) {
+      team.value!.pokemons_teams?.splice(index, 1);
+      websocket.emit('delete:pokemon', { pokemonId });
+    }
   };
 
   return {
     team,
-    websocketError: computed(() => websocket.state.onError) ,
+    websocketError: computed(() => websocket.state.onError),
     fetchTeam,
     updateName,
+    addNewPokemon,
+    deletePokemon,
   };
 });

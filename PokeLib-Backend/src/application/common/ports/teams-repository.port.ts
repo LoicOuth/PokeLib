@@ -7,4 +7,6 @@ export abstract class ITeamsRepository {
   abstract getPaginatedFromUserId(page: number, take: number, userId: number): Promise<IPagination<Team>>;
   abstract create(userId: number): Promise<Team>;
   abstract updateName(teamId: number, name: string): Promise<void>;
+  abstract addPokemon(teamId: number, pokemonId: number, abilityId: number): Promise<void>;
+  abstract deletePokemon(teamId: number, pokemonId: number): Promise<void>;
 }

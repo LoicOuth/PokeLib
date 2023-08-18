@@ -9,4 +9,5 @@ export abstract class ITeamsRepository {
   abstract updateName(teamId: number, name: string): Promise<void>;
   abstract addPokemon(teamId: number, pokemonId: number, abilityId: number): Promise<void>;
   abstract deletePokemon(teamId: number, pokemonId: number): Promise<void>;
+  abstract switchPokemon(teamId: number, oldPokemonId: number, pokemonId: number, abilityId: number): Promise<void>;
 }

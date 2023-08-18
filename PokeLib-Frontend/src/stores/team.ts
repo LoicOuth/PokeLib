@@ -32,9 +32,23 @@ export const useTeamStore = defineStore('teams', () => {
   const deletePokemon = (pokemonId: number) => {
     const index = team.value!.pokemons_teams?.findIndex((el) => el.pokemon_id === pokemonId);
 
-    if (index) {
+    if (index !== undefined && index !== -1) {
       team.value!.pokemons_teams?.splice(index, 1);
       websocket.emit('delete:pokemon', { pokemonId });
+    }
+  };
+
+  const switchPokemon = (oldPokemonId: number, pokemonId: number) => {
+    if (team.value && team.value.pokemons_teams) {
+      const index = team.value.pokemons_teams.findIndex((el) => el.pokemon_id === oldPokemonId);
+
+      if (index !== -1) {
+        team.value.pokemons_teams[index] = {
+          pokemon_id: pokemonId,
+        };
+
+        websocket.emit('switch:pokemon', { oldPokemonId, pokemonId });
+      }
     }
   };
 
@@ -45,5 +59,6 @@ export const useTeamStore = defineStore('teams', () => {
     updateName,
     addNewPokemon,
     deletePokemon,
+    switchPokemon,
   };
 });

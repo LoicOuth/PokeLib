@@ -11,7 +11,7 @@
       </template>
       <template #extension>
         <div v-if="selectedPokemon" class="d-flex justify-end align-center w-100">
-          <v-btn variant="text" icon>
+          <v-btn variant="text" icon @click="listPokemonDialog = { show: true, isSwitch: true }">
             <v-icon icon="mdi-swap-horizontal" />
             <v-tooltip text="Changer le pokemon" activator="parent" location="bottom" />
           </v-btn>
@@ -35,7 +35,7 @@
       </template>
     </v-toolbar>
     <v-row class="w-100">
-      <v-col cols="6">
+      <v-col cols="12" md="6" order="2" order-md="0">
         <v-row class="pa-10">
           <v-col v-for="(i, index) in 6" :key="index" cols="12" md="6">
             <v-card
@@ -46,7 +46,7 @@
               @click="
                 ifPokemon(index)
                   ? (selectedPokemon = getPokemonFromId(teamStore.team.pokemons_teams![index].pokemon_id))
-                  : (addPokemonDialog = true)
+                  : (listPokemonDialog = { show: true, isSwitch: false })
               "
             >
               <v-img
@@ -72,7 +72,7 @@
           </v-col>
         </v-row>
       </v-col>
-      <v-col cols="6">
+      <v-col cols="12" md="6">
         <v-row justify="center" align-content="center" style="padding-top: 2em">
           <PokemonDetailComponent
             v-if="selectedPokemon"
@@ -86,14 +86,16 @@
     </v-row>
   </div>
 
-  <v-dialog v-model="addPokemonDialog" transition="dialog-top-transition">
+  <v-dialog v-model="listPokemonDialog.show" transition="dialog-top-transition">
     <v-card class="pa-10">
       <div class="d-flex justify-center w-100">
         <PokemonListComponent
           height="130px"
           width="80%"
           :navigate="false"
-          @card-click="(e: IPokemon) => handleAddNewPokemon(e.id)"
+          @card-click="
+            (e: IPokemon) => (listPokemonDialog.isSwitch ? handleSwitchPokemon(e.id) : handleAddNewPokemon(e.id))
+          "
         />
       </div>
     </v-card>
@@ -115,18 +117,27 @@ const teamStore = useTeamStore();
 const route = useRoute();
 
 const selectedPokemon = ref<IPokemon>();
-const addPokemonDialog = ref(false);
+const listPokemonDialog = ref({
+  show: false,
+  isSwitch: false,
+});
 
 const ifPokemon = (index: number) => teamStore.team!.pokemons_teams && teamStore.team!.pokemons_teams[index];
 
 const handleAddNewPokemon = (pokemonId: number) => {
   teamStore.addNewPokemon(pokemonId);
-  addPokemonDialog.value = false;
+  listPokemonDialog.value.show = false;
 };
 
 const handleDeletePokemon = (pokemonId: number) => {
   teamStore.deletePokemon(pokemonId);
   selectedPokemon.value = undefined;
+};
+
+const handleSwitchPokemon = (pokemonId: number) => {
+  teamStore.switchPokemon(selectedPokemon.value!.id, pokemonId);
+  listPokemonDialog.value.show = false;
+  selectedPokemon.value = getPokemonFromId(pokemonId);
 };
 
 onMounted(async () => {

@@ -1,11 +1,10 @@
-import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsInt } from 'class-validator';
 import { IAbilityRepository } from 'src/application/common/ports/ability-repository.port';
-import { IPokemonRepository } from 'src/application/common/ports/pokemon-repository.port';
 import { ITeamsRepository } from 'src/application/common/ports/teams-repository.port';
-import { CurrentUserService } from 'src/application/common/services/current-user.service';
+import { TeamHelper } from '../helpers/team.helper';
+import { PokemonHelper } from 'src/application/pokemon/helpers/pokemon.helper';
 
 export class AddPokemonToTeamCommand {
   @ApiProperty()
@@ -22,23 +21,17 @@ export class AddPokemonToTeamCommandHandler implements ICommandHandler<AddPokemo
   constructor(
     private readonly abilityRepository: IAbilityRepository,
     private readonly teamRepository: ITeamsRepository,
-    private readonly pokemonRepository: IPokemonRepository,
-    private readonly userService: CurrentUserService,
+    private readonly pokemonHelper: PokemonHelper,
+    private readonly teamHelper: TeamHelper,
   ) {}
 
   async execute(command: AddPokemonToTeamCommand): Promise<void> {
-    const team = await this.teamRepository.getOne(command.teamId);
+    await this.teamHelper.checkTeamExistAndUserOwner(command.teamId);
 
-    if (!team) throw new BadRequestException(`Any team found with id : ${command.teamId} `);
+    await this.pokemonHelper.checkIfPokemonExist(command.pokemonId);
 
-    if (team.user_id !== this.userService.user.id) throw new ForbiddenException('You are not the owner of this team');
+    const ability = await this.abilityRepository.getRandomlyFromPokemon(command.pokemonId);
 
-    const pokemon = await this.pokemonRepository.getOne(command.pokemonId);
-
-    if (!pokemon) throw new BadRequestException(`Any pokemon found with id : ${command.pokemonId} `);
-
-    const ability = await this.abilityRepository.getRandomlyFromPokemon(pokemon.id);
-
-    await this.teamRepository.addPokemon(team.id, pokemon.id, ability.id);
+    await this.teamRepository.addPokemon(command.teamId, command.pokemonId, ability.id);
   }
 }

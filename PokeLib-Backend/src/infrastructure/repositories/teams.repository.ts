@@ -93,5 +93,20 @@ export class TeamRepository implements ITeamsRepository {
     });
   };
 
+  switchPokemon = async (teamId: number, oldPokemonId: number, pokemonId: number, abilityId: number): Promise<void> => {
+    await this.prismaClient.pokemonToTeam.update({
+      where: {
+        pokemon_id_team_id: {
+          pokemon_id: oldPokemonId,
+          team_id: teamId,
+        },
+      },
+      data: {
+        pokemon_id: pokemonId,
+        ability_id: abilityId,
+      },
+    });
+  };
+
   private countTeams = async () => await this.prismaClient.team.count();
 }

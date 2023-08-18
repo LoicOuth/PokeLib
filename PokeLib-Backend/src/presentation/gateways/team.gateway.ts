@@ -13,12 +13,14 @@ import { UpdateNameTeamCommand } from 'src/application/teams/commands/update-nam
 import { DefaultRequest } from './request/common/default.request';
 import { AddPokemonToTeamCommand } from 'src/application/teams/commands/add-pokemon-to-team.command';
 import { DeletePokemonToTeamCommand } from 'src/application/teams/commands/delete-pokemon-to-team.command';
+import { SwitchPokemonToTeamCommand } from 'src/application/teams/commands/switch-pokemon-to-team.command';
 
 const TeamEvent = {
   JOIN_ROOM: 'join:room',
   UPDATE_NAME: 'update:name',
   ADD_POKEMON: 'add:pokemon',
   DELETE_POKEMIN: 'delete:pokemon',
+  SWITCH_POLEMON: 'switch:pokemon',
 };
 
 @WebSocketGateway({ namespace: 'team', cors: '*' })
@@ -63,6 +65,19 @@ export class TeamGateway implements OnGatewayConnection {
   async handleAddPokemon(@MessageBody() [roomId, body]: DefaultRequest<{ pokemonId: number }>) {
     const command = new AddPokemonToTeamCommand();
     command.teamId = parseInt(roomId);
+    command.pokemonId = body.pokemonId;
+
+    await this.commandBus.execute(command);
+  }
+
+  @Auth(undefined, true)
+  @SubscribeMessage(TeamEvent.SWITCH_POLEMON)
+  async handleSwitchPokemon(
+    @MessageBody() [roomId, body]: DefaultRequest<{ oldPokemonId: number; pokemonId: number }>,
+  ) {
+    const command = new SwitchPokemonToTeamCommand();
+    command.teamId = parseInt(roomId);
+    command.oldPokemonId = body.oldPokemonId;
     command.pokemonId = body.pokemonId;
 
     await this.commandBus.execute(command);

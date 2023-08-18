@@ -10,15 +10,27 @@
         <v-icon icon="mdi-pokeball" />
       </template>
       <template #extension>
-        <div v-if="selectedPokemon" class="d-flex justify-end align-center w-100">
-          <v-btn variant="text" icon @click="listPokemonDialog = { show: true, isSwitch: true }">
-            <v-icon icon="mdi-swap-horizontal" />
-            <v-tooltip text="Changer le pokemon" activator="parent" location="bottom" />
-          </v-btn>
-          <v-btn variant="text" icon @click="handleDeletePokemon(selectedPokemon.id)">
-            <v-icon icon="mdi-delete" />
-            <v-tooltip text="Supprimer le pokemon" activator="parent" location="bottom" />
-          </v-btn>
+        <div class="d-flex align-center w-100" :class="{ 'justify-space-between': selectedPokemon }">
+          <div>
+            <v-switch
+              :model-value="teamStore.team.is_public"
+              label="Equipe publique"
+              color="secondary"
+              density="compact"
+              class="mt-5 pa-2 text-white"
+              @update:model-value="teamStore.updatePublic"
+            />
+          </div>
+          <div v-if="selectedPokemon">
+            <v-btn variant="text" icon @click="listPokemonDialog = { show: true, isSwitch: true }">
+              <v-icon icon="mdi-swap-horizontal" />
+              <v-tooltip text="Changer le pokemon" activator="parent" location="bottom" />
+            </v-btn>
+            <v-btn variant="text" icon @click="handleDeletePokemon(selectedPokemon.id)">
+              <v-icon icon="mdi-delete" />
+              <v-tooltip text="Supprimer le pokemon" activator="parent" location="bottom" />
+            </v-btn>
+          </div>
         </div>
       </template>
       <template #append>
@@ -111,6 +123,7 @@ import { useTeamStore } from '@/stores/team';
 import { ref } from 'vue';
 import { onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { onUnmounted } from 'vue';
 
 const { getPokemonFromId } = usePokemonStore();
 const teamStore = useTeamStore();
@@ -142,6 +155,10 @@ const handleSwitchPokemon = (pokemonId: number) => {
 
 onMounted(async () => {
   if (route.params.teamId) await teamStore.fetchTeam(route.params.teamId.toString());
+});
+
+onUnmounted(() => {
+  teamStore.websocketDisconnect();
 });
 </script>
 

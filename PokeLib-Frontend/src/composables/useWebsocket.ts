@@ -53,6 +53,10 @@ export const useWebsocket = () => {
     socket.connect();
   };
 
+  const disconnect = () => {
+    socket.disconnect();
+  };
+
   const emit = (event: string, body: object) => {
     if (state.teamId.length > 0) socket.emit(event, state.teamId, body);
   };
@@ -66,5 +70,6 @@ export const useWebsocket = () => {
     setTeamId,
     connect,
     emit,
+    disconnect,
   };
 };

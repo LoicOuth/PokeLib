@@ -52,6 +52,15 @@ export const useTeamStore = defineStore('teams', () => {
     }
   };
 
+  const updatePublic = (newValue: boolean) => {
+    team.value!.is_public = newValue;
+  };
+
+  const websocketDisconnect = () => {
+    websocket.disconnect();
+    team.value = undefined;
+  };
+
   return {
     team,
     websocketError: computed(() => websocket.state.onError),
@@ -60,5 +69,7 @@ export const useTeamStore = defineStore('teams', () => {
     addNewPokemon,
     deletePokemon,
     switchPokemon,
+    updatePublic,
+    websocketDisconnect,
   };
 });

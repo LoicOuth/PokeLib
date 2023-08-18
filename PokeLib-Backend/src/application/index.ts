@@ -11,6 +11,7 @@ import { DeletePokemonToTeamCommandHandler } from './teams/commands/delete-pokem
 import { SwitchPokemonToTeamCommandHandler } from './teams/commands/switch-pokemon-to-team.command';
 import { UpdateNameTeamCommandHandler } from './teams/commands/update-name-team.command';
 import { TeamHelper } from './teams/helpers/team.helper';
+import { GetMyTeamsQueryHandler } from './teams/queries/get-my-teams.query';
 import { GetOneTeamQueryHandler } from './teams/queries/get-one-team.query';
 import { GetPublicTeamsQueryHandler } from './teams/queries/get-public-teams.query';
 import { GetAllTypeQueryHandler } from './type/queries/get-all-type.query';
@@ -26,6 +27,7 @@ import { GetUserByPseudoQueryHandler } from './user/queries/get-user-by-pseudo.q
 const teamHandlers = [
   GetOneTeamQueryHandler,
   GetPublicTeamsQueryHandler,
+  GetMyTeamsQueryHandler,
   CreateTeamCommandHandler,
   UpdateNameTeamCommandHandler,
   AddPokemonToTeamCommandHandler,

@@ -5,6 +5,7 @@ import { GetPublicTeamsQuery } from 'src/application/teams/queries/get-public-te
 import { Auth } from 'src/application/common/decorators/auth.decorator';
 import { CreateTeamCommand } from 'src/application/teams/commands/create-team.command';
 import { GetOneTeamQuery } from 'src/application/teams/queries/get-one-team.query';
+import { GetMyTeamsQuery } from 'src/application/teams/queries/get-my-teams.query';
 
 @ApiTags('Teams')
 @Controller('teams')
@@ -13,6 +14,12 @@ export class TeamController {
 
   @Get('public')
   async getAll(@Query() query: GetPublicTeamsQuery) {
+    return await this.queryBus.execute(query);
+  }
+
+  @Auth()
+  @Get('me')
+  async getMyTeams(@Query() query: GetMyTeamsQuery) {
     return await this.queryBus.execute(query);
   }
 

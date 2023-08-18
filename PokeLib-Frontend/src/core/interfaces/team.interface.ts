@@ -7,6 +7,7 @@ export interface ITeam {
   is_public: boolean;
   created_at: Date;
   updated_at: Date;
+  user_id: number;
 
   user?: IUser;
   pokemons_teams?: IPokemonsTeam[];

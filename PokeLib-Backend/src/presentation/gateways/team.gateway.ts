@@ -14,6 +14,7 @@ import { DefaultRequest } from './request/common/default.request';
 import { AddPokemonToTeamCommand } from 'src/application/teams/commands/add-pokemon-to-team.command';
 import { DeletePokemonToTeamCommand } from 'src/application/teams/commands/delete-pokemon-to-team.command';
 import { SwitchPokemonToTeamCommand } from 'src/application/teams/commands/switch-pokemon-to-team.command';
+import { SetPublicTeamCommand } from 'src/application/teams/commands/set-public-team.commad';
 
 const TeamEvent = {
   JOIN_ROOM: 'join:room',
@@ -21,6 +22,7 @@ const TeamEvent = {
   ADD_POKEMON: 'add:pokemon',
   DELETE_POKEMIN: 'delete:pokemon',
   SWITCH_POLEMON: 'switch:pokemon',
+  SET_PUBLIC: 'set:public',
 };
 
 @WebSocketGateway({ namespace: 'team', cors: '*' })
@@ -79,6 +81,16 @@ export class TeamGateway implements OnGatewayConnection {
     command.teamId = parseInt(roomId);
     command.oldPokemonId = body.oldPokemonId;
     command.pokemonId = body.pokemonId;
+
+    await this.commandBus.execute(command);
+  }
+
+  @Auth(undefined, true)
+  @SubscribeMessage(TeamEvent.SET_PUBLIC)
+  async handleSetPublic(@MessageBody() [roomId, body]: DefaultRequest<{ isPublic: boolean }>) {
+    const command = new SetPublicTeamCommand();
+    command.teamId = parseInt(roomId);
+    command.isPublic = body.isPublic;
 
     await this.commandBus.execute(command);
   }

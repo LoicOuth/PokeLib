@@ -2,7 +2,7 @@
   <h1 class="text-center my-5">Mes équipes</h1>
   <v-divider class="mb-5"></v-divider>
 
-  <TeamItem v-if="teams" :teams="teams" />
+  <TeamItem v-if="teams" :teams="teams" @update:teams="fetchTeams()" />
 </template>
 
 <script setup lang="ts">

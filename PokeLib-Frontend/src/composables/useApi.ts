@@ -18,6 +18,8 @@ export const useApi = () => {
   const put = async <T>(endpoint: string, body: Object | FormData, parseResponse: boolean = false): Promise<T> =>
     await send(endpoint, 'PUT', body, parseResponse);
 
+  const deletes = async <T>(endpoint: string): Promise<T> => await send(endpoint, 'DELETE', undefined, false);
+
   const send = async (endpoint: string, method: string, body?: Object | FormData, parseReponse: boolean = true) => {
     const accessToken = localStorage.getItem(LOCALSTORAGE.ACCESS_TOKEN);
 
@@ -74,5 +76,6 @@ export const useApi = () => {
     get,
     post,
     put,
+    deletes,
   };
 };

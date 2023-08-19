@@ -54,6 +54,8 @@ export const useTeamStore = defineStore('teams', () => {
 
   const updatePublic = (newValue: boolean) => {
     team.value!.is_public = newValue;
+
+    websocket.emit('set:public', { isPublic: newValue });
   };
 
   const websocketDisconnect = () => {

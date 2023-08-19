@@ -1,11 +1,12 @@
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
-import { Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { GetPublicTeamsQuery } from 'src/application/teams/queries/get-public-teams.query';
 import { Auth } from 'src/application/common/decorators/auth.decorator';
 import { CreateTeamCommand } from 'src/application/teams/commands/create-team.command';
 import { GetOneTeamQuery } from 'src/application/teams/queries/get-one-team.query';
 import { GetMyTeamsQuery } from 'src/application/teams/queries/get-my-teams.query';
+import { DeleteTeamCommand } from 'src/application/teams/commands/delete-team.commad';
 
 @ApiTags('Teams')
 @Controller('teams')
@@ -35,5 +36,14 @@ export class TeamController {
   @Post('create')
   async create() {
     return await this.commandbus.execute(new CreateTeamCommand());
+  }
+
+  @Auth()
+  @Delete(':teamId')
+  async delete(@Param('teamId') teamId: number) {
+    const command = new DeleteTeamCommand();
+    command.teamId = teamId;
+
+    return await this.commandbus.execute(command);
   }
 }

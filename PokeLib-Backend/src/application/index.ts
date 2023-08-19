@@ -8,6 +8,8 @@ import { GetAllPokemonQueryHandler } from './pokemon/queries/get-all-pokemon.que
 import { AddPokemonToTeamCommandHandler } from './teams/commands/add-pokemon-to-team.command';
 import { CreateTeamCommandHandler } from './teams/commands/create-team.command';
 import { DeletePokemonToTeamCommandHandler } from './teams/commands/delete-pokemon-to-team.command';
+import { DeleteTeamCommandHandler } from './teams/commands/delete-team.commad';
+import { SetPublicTeamCommandHandler } from './teams/commands/set-public-team.commad';
 import { SwitchPokemonToTeamCommandHandler } from './teams/commands/switch-pokemon-to-team.command';
 import { UpdateNameTeamCommandHandler } from './teams/commands/update-name-team.command';
 import { TeamHelper } from './teams/helpers/team.helper';
@@ -33,6 +35,8 @@ const teamHandlers = [
   AddPokemonToTeamCommandHandler,
   DeletePokemonToTeamCommandHandler,
   SwitchPokemonToTeamCommandHandler,
+  DeleteTeamCommandHandler,
+  SetPublicTeamCommandHandler,
 ];
 
 const typeHandlers = [GetAllTypeQueryHandler];

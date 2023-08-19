@@ -108,5 +108,22 @@ export class TeamRepository implements ITeamsRepository {
     });
   };
 
+  delete = async (teamId: number): Promise<void> => {
+    await this.prismaClient.pokemonToTeam.deleteMany({
+      where: { team_id: teamId },
+    });
+
+    await this.prismaClient.team.delete({ where: { id: teamId } });
+  };
+
+  setPublic = async (teamId: number, isPublic: boolean): Promise<void> => {
+    await this.prismaClient.team.update({
+      where: { id: teamId },
+      data: {
+        is_public: isPublic,
+      },
+    });
+  };
+
   private countTeams = async () => await this.prismaClient.team.count();
 }

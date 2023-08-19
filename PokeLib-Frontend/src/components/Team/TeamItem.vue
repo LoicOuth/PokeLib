@@ -20,7 +20,7 @@
             <v-col>
               <v-toolbar v-if="isOwner(team.user_id)" rounded color="primary">
                 <v-btn prepend-icon="mdi-pencil" :to="`/account/myteams/${team.id}`">Modifier</v-btn>
-                <v-btn prepend-icon="mdi-delete">Supprimer</v-btn>
+                <v-btn prepend-icon="mdi-delete" @click="deleteDialog = { show: true, team }">Supprimer</v-btn>
               </v-toolbar>
 
               <div class="pa-10">
@@ -57,21 +57,61 @@
     @update:model-value="(e: number) => router.push({ query: { page: e } })"
     rounded="circle"
   />
+
+  <v-dialog v-model="deleteDialog.show" persistent width="auto" transition="dialog-top-transition">
+    <v-card>
+      <v-card-text>Voulez-vous vraiment supprimmer l'équipe suivante : {{ deleteDialog.team.name }} ?</v-card-text>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn color="primary" variant="text" @click="deleteDialog = { show: false, team: {} as ITeam }"> Non </v-btn>
+        <v-btn color="primary" variant="text" @click="handleDelete()"> Oui </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <script setup lang="ts">
 import type { ITeam } from '@/core/interfaces/team.interface';
-import type { PropType } from 'vue';
+import { ref, type PropType } from 'vue';
 import { usePokemonStore } from '@/stores/pokemon';
 import { useRouter } from 'vue-router';
 import type { IPagination } from '@/core/interfaces/common/pagination.interface';
 import { useAuthStore } from '@/stores/auth';
+import { useApi } from '@/composables/useApi';
+import { useAppData } from '@/stores/app-data';
+import { AlertBuilder } from '@/core/builders/alert.builder';
 
 const { getPokemonFromId } = usePokemonStore();
+const { setNewAlert } = useAppData();
 const authStore = useAuthStore();
+const fetch = useApi();
 const router = useRouter();
 
+const deleteDialog = ref({
+  show: false,
+  team: {} as ITeam,
+});
+
 const isOwner = (userId: number) => userId === authStore.connectedUser?.id;
+
+const handleDelete = async () => {
+  try {
+    await fetch.deletes(`teams/${deleteDialog.value.team.id}`);
+
+    setNewAlert(new AlertBuilder('Equipes supprimer avec succès').buildSuccess());
+
+    deleteDialog.value = {
+      show: false,
+      team: {} as ITeam,
+    };
+
+    emits('update:teams');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const emits = defineEmits(['update:teams']);
 
 defineProps({
   teams: { type: Object as PropType<IPagination<ITeam>>, required: true },

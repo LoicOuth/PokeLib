@@ -22,7 +22,7 @@ export class TeamRepository implements ITeamsRepository {
     });
 
   getPaginatedFromUserId = async (page: number, take: number, userId: number): Promise<IPagination<Team>> => {
-    const count = await this.countTeams();
+    const count = await this.prismaClient.team.count({ where: { user_id: userId } });
     const list = await this.prismaClient.team.findMany({
       where: {
         user_id: userId,
@@ -37,16 +37,17 @@ export class TeamRepository implements ITeamsRepository {
     return Pagination.paginated(list, page, take, count);
   };
 
-  getPaginated = async (page: number, take: number): Promise<IPagination<Team>> => {
-    const count = await this.countTeams();
+  getPaginated = async (page: number, take: number, takeUser = true, userId?: number): Promise<IPagination<Team>> => {
+    const count = await this.prismaClient.team.count({ where: { is_public: true, user_id: userId } });
 
     const list = await this.prismaClient.team.findMany({
       where: {
         is_public: true,
+        user_id: userId,
       },
       include: {
         pokemons_teams: true,
-        user: true,
+        user: takeUser,
       },
       skip: (page - 1) * take,
       take,
@@ -124,6 +125,4 @@ export class TeamRepository implements ITeamsRepository {
       },
     });
   };
-
-  private countTeams = async () => await this.prismaClient.team.count();
 }

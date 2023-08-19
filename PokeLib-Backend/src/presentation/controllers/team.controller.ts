@@ -7,6 +7,7 @@ import { CreateTeamCommand } from 'src/application/teams/commands/create-team.co
 import { GetOneTeamQuery } from 'src/application/teams/queries/get-one-team.query';
 import { GetMyTeamsQuery } from 'src/application/teams/queries/get-my-teams.query';
 import { DeleteTeamCommand } from 'src/application/teams/commands/delete-team.commad';
+import { GetTeamsFromUserQuery } from 'src/application/teams/queries/get-from-user.query copy';
 
 @ApiTags('Teams')
 @Controller('teams')
@@ -21,6 +22,12 @@ export class TeamController {
   @Auth()
   @Get('me')
   async getMyTeams(@Query() query: GetMyTeamsQuery) {
+    return await this.queryBus.execute(query);
+  }
+
+  @Auth()
+  @Get()
+  async getFromUserId(@Query() query: GetTeamsFromUserQuery) {
     return await this.queryBus.execute(query);
   }
 

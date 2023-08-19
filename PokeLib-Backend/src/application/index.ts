@@ -13,6 +13,7 @@ import { SetPublicTeamCommandHandler } from './teams/commands/set-public-team.co
 import { SwitchPokemonToTeamCommandHandler } from './teams/commands/switch-pokemon-to-team.command';
 import { UpdateNameTeamCommandHandler } from './teams/commands/update-name-team.command';
 import { TeamHelper } from './teams/helpers/team.helper';
+import { GetTeamsFromUserQueryHadnler } from './teams/queries/get-from-user.query copy';
 import { GetMyTeamsQueryHandler } from './teams/queries/get-my-teams.query';
 import { GetOneTeamQueryHandler } from './teams/queries/get-one-team.query';
 import { GetPublicTeamsQueryHandler } from './teams/queries/get-public-teams.query';
@@ -37,6 +38,7 @@ const teamHandlers = [
   SwitchPokemonToTeamCommandHandler,
   DeleteTeamCommandHandler,
   SetPublicTeamCommandHandler,
+  GetTeamsFromUserQueryHadnler,
 ];
 
 const typeHandlers = [GetAllTypeQueryHandler];

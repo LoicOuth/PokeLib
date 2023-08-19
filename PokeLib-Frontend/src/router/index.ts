@@ -32,6 +32,14 @@ const router = createRouter({
       },
     },
     {
+      path: '/teams',
+      name: 'teams',
+      component: () => import('../views/TeamsView.vue'),
+      meta: {
+        layout: AppLayout,
+      },
+    },
+    {
       path: '/pokedex/:name',
       name: 'pokemon-detail',
       component: () => import('../views/PokemonDetail.vue'),

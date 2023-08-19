@@ -1,6 +1,5 @@
 <template>
-  <h1 class="text-center my-5">Mes équipes</h1>
-  <v-divider class="mb-5"></v-divider>
+  <h1 class="text-center my-5">Mes équipes ({{ teams?.itemCount }})</h1>
 
   <TeamItem v-if="teams" :teams="teams" @update:teams="fetchTeams()" />
 </template>

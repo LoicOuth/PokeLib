@@ -1,6 +1,6 @@
 <template>
   <div v-if="user.data" class="d-flex justify-center">
-    <v-card class="w-50 ma-10 pa-10">
+    <v-card class="ma-md-10 ma-3 pa-md-10 pa-3" :class="mdAndDown ? 'w-100' : 'w-50'">
       <div v-if="user.isConnected" class="edit-btns d-flex align-center">
         <EditAccountPassword />
 
@@ -38,8 +38,9 @@
         </div>
       </div>
 
-      <h2>10 équipes</h2>
+      <h2>{{ teams?.itemCount }} équipe{{ teams && teams.itemCount > 1 ? 's' : '  ' }}</h2>
       <v-divider />
+      <TeamItem v-if="teams" :teams="teams" width="w-100" />
     </v-card>
   </div>
 </template>
@@ -53,15 +54,21 @@ import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import EditAccountInfoView from '@/components/EditAccount/EditAccountInfo.vue';
 import EditAccountPassword from '@/components/EditAccount/EditAccountPassword.vue';
+import type { IPagination } from '@/core/interfaces/common/pagination.interface';
+import type { ITeam } from '@/core/interfaces/team.interface';
+import TeamItem from '@/components/Team/TeamItem.vue';
+import { useDisplay } from 'vuetify';
 
 const route = useRoute();
 const fetch = useApi();
 const authStore = useAuthStore();
+const { mdAndDown } = useDisplay();
 
 const user = ref<{ isConnected: boolean; data: IUser | null }>({
   isConnected: false,
   data: null,
 });
+const teams = ref<IPagination<ITeam>>();
 const inputFile = ref();
 const editMode = ref(false);
 
@@ -82,8 +89,20 @@ const refreshAccount = async () => {
   }
 };
 
+const fetchTeams = async () => {
+  teams.value = await fetch.get<IPagination<ITeam>>(
+    `teams?page=${route.query.page || 1}&take=4&userId=${user.value.data?.id}`,
+  );
+};
+
+watch(
+  () => route.query.page,
+  async () => await fetchTeams(),
+);
+
 onMounted(async () => {
   await refreshAccount();
+  await fetchTeams();
 });
 
 watch(route, async (value) => {

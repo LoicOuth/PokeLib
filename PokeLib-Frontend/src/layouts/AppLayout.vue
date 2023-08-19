@@ -9,6 +9,7 @@
         <div class="d-flex ml-md-14 ml-2">
           <NavLink to="/" text="Accueil" icon="mdi-home" />
           <NavLink to="/pokedex" text="Pokedex" icon="mdi-bookshelf" />
+          <NavLink to="/teams" text="Equipes" icon="mdi-pokeball" />
         </div>
       </div>
     </template>

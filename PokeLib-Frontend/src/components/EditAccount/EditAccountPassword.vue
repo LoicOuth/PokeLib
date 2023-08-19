@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="changePasswordDialog" transition="dialog-top-transition" width="30vw">
+  <v-dialog v-model="changePasswordDialog" transition="dialog-top-transition" :width="mdAndDown ? '100vw' : '30vw'">
     <template v-slot:activator="{ props: dialogProps }">
       <v-btn variant="text" color="secondary" icon v-bind="dialogProps" @click="changePasswordDialog = true">
         <v-icon icon="mdi-lock-check" />
@@ -48,9 +48,11 @@ import GenericForm from '../General/GenericForm.vue';
 import { useApi } from '@/composables/useApi';
 import { useAppData } from '@/stores/app-data';
 import { AlertBuilder } from '@/core/builders/alert.builder';
+import { useDisplay } from 'vuetify';
 
 const fetch = useApi();
 const { setNewAlert } = useAppData();
+const { mdAndDown } = useDisplay();
 
 const initialData = {
   password: '',

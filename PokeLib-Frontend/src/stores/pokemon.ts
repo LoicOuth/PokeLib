@@ -48,6 +48,7 @@ export const usePokemonStore = defineStore('pokemons', () => {
     randomPokemon,
     generateNewRandomPokemon,
     getPokemonFromName,
+    getPokemonFromId,
     getNextPokemon,
     getPrevPokemon,
     getTypeFromId,

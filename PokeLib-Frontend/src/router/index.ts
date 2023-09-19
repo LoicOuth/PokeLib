@@ -32,6 +32,14 @@ const router = createRouter({
       },
     },
     {
+      path: '/teams',
+      name: 'teams',
+      component: () => import('../views/TeamsView.vue'),
+      meta: {
+        layout: AppLayout,
+      },
+    },
+    {
       path: '/pokedex/:name',
       name: 'pokemon-detail',
       component: () => import('../views/PokemonDetail.vue'),
@@ -43,6 +51,30 @@ const router = createRouter({
       path: '/account/:pseudo',
       name: 'account',
       component: () => import('../views/AccountView.vue'),
+      meta: {
+        layout: AppLayout,
+      },
+    },
+    {
+      path: '/account/myteams',
+      name: 'my-teams',
+      component: () => import('../views/MyTeamsView.vue'),
+      meta: {
+        layout: AppLayout,
+      },
+    },
+    {
+      path: '/account/myteams/:teamId',
+      name: 'edit-team',
+      component: () => import('../views/EditTeamView.vue'),
+      meta: {
+        layout: AppLayout,
+      },
+    },
+    {
+      path: '/rgpd',
+      name: 'rgpd',
+      component: () => import('../views/RgpdView.vue'),
       meta: {
         layout: AppLayout,
       },

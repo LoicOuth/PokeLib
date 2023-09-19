@@ -14,6 +14,9 @@ export class PokemonRepository implements IPokemonRepository {
     private readonly typeRepo: ITypeRepository,
   ) {}
 
+  getOne = async (pokemonId: number): Promise<Pokemon> =>
+    await this.prismaClient.pokemon.findFirst({ where: { id: pokemonId } });
+
   getAll = async (): Promise<Pokemon[]> =>
     await this.prismaClient.pokemon.findMany({ include: { evolutions: { include: { pokemon_evolution: true } } } });
 

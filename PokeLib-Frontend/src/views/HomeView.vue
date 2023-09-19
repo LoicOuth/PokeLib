@@ -1,5 +1,7 @@
 <template>
-  <div class="d-flex flex-column ma-md-14 ma-2">
+  <div class="d-flex flex-column ma-md-14 ma-2 home-container">
+    <h1 class="text-h2 text-center">Bienvenue sur Pokemon library</h1>
+
     <div v-if="pokemonStore.randomPokemon" class="d-flex flex-md-row flex-column-reverse">
       <v-card
         :style="{
@@ -49,16 +51,41 @@
         >
       </div>
     </div>
+
+    <div>
+      <a href="#next" class="d-flex flex-column align-center next">
+        <h1 class="text-h4">Cliquer pour en savoir plus</h1>
+        <v-icon icon="mdi-chevron-down" size="50" />
+      </a>
+    </div>
+
+    <div id="next">
+      <TeamSystem />
+    </div>
+
+    <div>
+      <TechStack />
+    </div>
+
+    <div>
+      <PartnairSection />
+    </div>
   </div>
+
+  <FooterComponent />
 </template>
 
 <script setup lang="ts">
 import TypeComponent from '@/components/TypeComponent.vue';
+import TechStack from '@/components/Home/TechStack.vue';
+import TeamSystem from '@/components/Home/TeamSystem.vue';
+import PartnairSection from '@/components/Home/PartnairSection.vue';
 import { usePokemonStore } from '@/stores/pokemon';
 import { getBackgroundColor } from '@/utils/color.util';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useDisplay } from 'vuetify';
+import FooterComponent from '@/components/General/FooterComponent.vue';
 
 const pokemonStore = usePokemonStore();
 const { mdAndDown } = useDisplay();
@@ -73,5 +100,22 @@ onMounted(() => {
 .pokedex-number {
   writing-mode: vertical-rl;
   text-orientation: mixed;
+}
+
+.home-container {
+  & > div {
+    margin-top: 6em;
+  }
+}
+
+.next {
+  text-decoration: none;
+  color: white;
+
+  &:hover {
+    & > i {
+      animation: bounce 1s;
+    }
+  }
 }
 </style>

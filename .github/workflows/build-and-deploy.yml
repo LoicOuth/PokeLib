@@ -21,13 +21,13 @@ jobs:
 
       - name: Create frontend .env
         run: |
-          echo "VITE_API_URL=https://api-pokelib.barouth.fr/api" > PokeLib-Frontend/.env
+          echo "VITE_BACKEND_URL=https://api-pokelib.barouth.fr" > PokeLib-Frontend/.env
           echo "VITE_GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> PokeLib-Frontend/.env
           echo "VITE_GOOGLE_CLIENT_SCOPE='https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email'" >> PokeLib-Frontend/.env
 
       - name: Install frontend dependencies
         run: cd PokeLib-Frontend && npm install
-        
+
       - name: Build frontend
         run: cd PokeLib-Frontend && npm run build
 

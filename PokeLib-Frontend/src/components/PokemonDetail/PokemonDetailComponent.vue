@@ -1,6 +1,11 @@
 <template>
   <div class="bg-surface h-100 d-flex flex-column align-center relative rounded px-md-10 px-4" :class="width">
-    <PokemonDetailHeader :pokemon="pokemon!" :show-shiny="showShiny" :show-next-and-prev="showNextAndPrev" />
+    <PokemonDetailHeader
+      :pokemon="pokemon!"
+      :show-shiny="showShiny"
+      :show-next-and-prev="showNextAndPrev"
+      @on-navigate="tab = 'stat'"
+    />
     <div class="d-flex justify-space-between w-100 detail-header">
       <div class="d-flex flex-column">
         <h1>

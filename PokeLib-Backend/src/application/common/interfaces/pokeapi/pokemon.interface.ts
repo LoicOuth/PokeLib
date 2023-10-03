@@ -26,7 +26,7 @@ export interface IPokeapiPokemon {
     vit: number;
   };
   evolution?: {
-    pre?: { pokedexId: number }[];
+    pre?: { pokedexId: number; condition: string }[];
     next?: { pokedexId: number; condition: string }[];
     mega?: {
       orbe?: string;

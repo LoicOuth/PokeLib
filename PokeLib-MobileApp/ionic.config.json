@@ -1,0 +1,7 @@
+{
+  "name": "PokeLib-MobileApp",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}

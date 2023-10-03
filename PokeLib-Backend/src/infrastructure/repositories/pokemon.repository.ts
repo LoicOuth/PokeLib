@@ -5,6 +5,7 @@ import { IAbilityRepository } from 'src/application/common/ports/ability-reposit
 import { ITypeRepository } from 'src/application/common/ports/type-repository.port';
 import { IPokemonRepository } from 'src/application/common/ports/pokemon-repository.port';
 import { Pokemon } from 'src/domain/entities/pokemon.entity';
+import { EvolutionType } from '@prisma/client';
 
 @Injectable()
 export class PokemonRepository implements IPokemonRepository {
@@ -118,56 +119,43 @@ export class PokemonRepository implements IPokemonRepository {
           }
         }
 
-        if (pokemon.evolution.next && pokemon.evolution.next.length > 0)
-          for (const evolutionNext of pokemon.evolution.next) {
-            const evolutionNextData = {
-              condition: evolutionNext.condition,
+        const evolutions = [];
+
+        if (pokemon.evolution.next && pokemon.evolution.next.length > 0) {
+          evolutions.push(...pokemon.evolution.next.map((el) => ({ ...el, type: EvolutionType.NEXT })));
+        }
+
+        if (pokemon.evolution.pre && pokemon.evolution.pre.length > 0) {
+          evolutions.push(...pokemon.evolution.pre.map((el) => ({ ...el, type: EvolutionType.PRE })));
+        }
+
+        if (evolutions.length > 0) {
+          for (const evolution of evolutions) {
+            const evolutionData = {
+              condition: evolution.condition,
               pokemon_id: pokemonEntity.id,
-              pokemon_evolution_id: evolutionNext.pokedexId,
+              pokemon_evolution_id: evolution.pokedexId,
+              type: evolution.type,
             };
 
-            const evolutionNextEntity = await this.prismaClient.evolution.findFirst({
+            const evolutionEntity = await this.prismaClient.evolution.findFirst({
               where: {
                 AND: [
-                  { pokemon_id: evolutionNextData.pokemon_id },
-                  { pokemon_evolution_id: evolutionNextData.pokemon_evolution_id },
+                  { pokemon_id: evolutionData.pokemon_id },
+                  { pokemon_evolution_id: evolutionData.pokemon_evolution_id },
                 ],
               },
             });
 
             await this.prismaClient.evolution.upsert({
               where: {
-                id: evolutionNextEntity ? evolutionNextEntity.id : 0,
+                id: evolutionEntity ? evolutionEntity.id : 0,
               },
-              update: evolutionNextData,
-              create: evolutionNextData,
+              update: evolutionData,
+              create: evolutionData,
             });
           }
-
-        if (pokemon.evolution.pre && pokemon.evolution.pre.length > 0)
-          for (const evolutionPre of pokemon.evolution.pre) {
-            const evolutionPreData = {
-              pokemon_id: pokemonEntity.id,
-              pokemon_evolution_id: evolutionPre.pokedexId,
-            };
-
-            const evolutionPreEntity = await this.prismaClient.evolution.findFirst({
-              where: {
-                AND: [
-                  { pokemon_id: evolutionPreData.pokemon_id },
-                  { pokemon_evolution_id: evolutionPreData.pokemon_evolution_id },
-                ],
-              },
-            });
-
-            await this.prismaClient.evolution.upsert({
-              where: {
-                id: evolutionPreEntity ? evolutionPreEntity.id : 0,
-              },
-              update: evolutionPreData,
-              create: evolutionPreData,
-            });
-          }
+        }
       }
     }
   };

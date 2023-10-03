@@ -29,7 +29,7 @@ import { IEnvironmentConfig } from './application/common/interfaces/environment.
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads/images'),
-      serveRoot: '/uploads/images',
+      serveRoot: './uploads/images',
     }),
   ],
   controllers: [...controllers],

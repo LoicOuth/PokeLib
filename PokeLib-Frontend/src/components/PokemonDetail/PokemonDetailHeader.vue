@@ -49,6 +49,8 @@ const props = defineProps({
   showNextAndPrev: { type: Boolean, required: false, default: true },
 });
 
+const emits = defineEmits(['onNavigate']);
+
 const { getNextPokemon, getPrevPokemon } = usePokemonStore();
 const router = useRouter();
 const { mdAndDown } = useDisplay();
@@ -60,6 +62,7 @@ const imgSize = computed(() => (mdAndDown.value ? '100' : '150'));
 const defaultImgSize = computed(() => (mdAndDown.value ? '150' : '250'));
 
 const handleNavigate = (name: string) => {
+  emits('onNavigate');
   router.push(`/pokedex/${name}`);
 };
 </script>

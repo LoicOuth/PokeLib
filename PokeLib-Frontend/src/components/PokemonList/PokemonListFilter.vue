@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex my-5" :class="showFilter ? (mdAndDown ? 'w-100' : 'w-25') : 'w-0'">
+  <div class="d-flex my-5 pokemon-list-filter">
     <v-card v-if="showFilter" class="w-100 h-100">
       <template v-slot:title>
         <div class="d-flex justify-space-between align-center">
@@ -160,6 +160,11 @@ const handleFilter = () => {
 </script>
 
 <style scoped lang="scss">
+.pokemon-list-filter {
+  min-width: 400px;
+  max-height: calc(100vh - 110px);
+}
+
 .footer {
   position: absolute;
   width: 100%;

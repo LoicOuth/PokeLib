@@ -5,26 +5,28 @@
     </PokemonListFilter>
     <div :style="{ width: mdAndDown ? '100%' : props.width }">
       <h1 v-if="filtredPokemons.length <= 0" class="text-center">Aucun pokemon trouvé</h1>
-      <v-virtual-scroll
-        v-else
-        ref="virtual"
-        :height="`calc(100vh - ${props.height})`"
-        :items="filtredPokemons"
-        v-scroll.self="onScroll"
-        style="scroll-behavior: smooth"
-      >
-        <template v-slot:default="{ item: pokemon }">
-          <div
-            class="d-flex pokemon pa-5 align-center rounded-lg elevation-3 ma-5"
-            :style="{ '--bg': getBackgroundColor(pokemon.first_type_id, pokemon.second_type_id) }"
-            @click="props.navigate ? router.push(`/pokedex/${pokemon.name}`) : emits('cardClick', pokemon)"
-          >
-            <img :src="pokemon.sprite_regular" />
-            <h1 class="ml-10">{{ pokemon.name }}</h1>
-            <span class="pokedex-number"> #{{ pokemon.pokedex_order }} </span>
+
+      <div v-for="pokemon in filtredPokemons" :key="pokemon.id">
+        <div
+          class="d-flex pokemon pa-5 align-center rounded-lg elevation-3 ma-5"
+          :style="{ '--bg': getBackgroundColor(pokemon.first_type_id, pokemon.second_type_id) }"
+          @click="props.navigate ? router.push(`/pokedex/${pokemon.name}`) : emits('cardClick', pokemon)"
+        >
+          <div class="pokemon__img">
+            <v-img :src="pokemon.sprite_regular">
+              <template v-slot:placeholder>
+                <div class="d-flex align-center justify-center fill-height">
+                  <v-skeleton-loader type="avatar" />
+                </div>
+              </template>
+            </v-img>
           </div>
-        </template>
-      </v-virtual-scroll>
+          <h1 class="ml-10">{{ pokemon.name }}</h1>
+          <v-skeleton-loader type="avatar" />
+
+          <span class="pokedex-number"> #{{ pokemon.pokedex_order }} </span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -56,10 +58,6 @@ const router = useRouter();
 const isTop = ref(true);
 const virtual = ref();
 const filtredPokemons = ref(pokemons);
-
-const onScroll = (e: any) => {
-  isTop.value = e.target.scrollTop === 0;
-};
 </script>
 
 <style scoped lang="scss">
@@ -86,10 +84,11 @@ const onScroll = (e: any) => {
     border-radius: 5px;
   }
 
-  > img {
+  &__img {
     height: 100px;
     width: 100px;
     z-index: 5;
+    padding: 0px;
   }
 
   > h1 {

@@ -2,12 +2,21 @@
   <div
     class="d-flex flex-md-row flex-column justify-space-between w-100 align-center evolution-container overflow-x-auto"
   >
-    <template v-for="evolution in props.pokemon?.evolutions?.filter((el) => !el.condition)" :key="evolution.id">
+    <template
+      v-for="evolution in props.pokemon?.evolutions?.filter((el) => el.type === EvolutionType.PRE)"
+      :key="evolution.id"
+    >
       <PokemonEvolutionItem :pokemon="evolution.pokemon_evolution" />
-      <v-icon icon="mdi-chevron-right" size="x-large" />
+      <div class="d-flex flex-column justify-center align-center">
+        <v-icon icon="mdi-chevron-right" size="x-large" />
+        <h5 class="text-center">{{ evolution.condition }}</h5>
+      </div>
     </template>
     <PokemonEvolutionItem :pokemon="pokemon" />
-    <template v-for="evolution in props.pokemon?.evolutions?.filter((el) => el.condition)" :key="evolution.id">
+    <template
+      v-for="evolution in props.pokemon?.evolutions?.filter((el) => el.type === EvolutionType.NEXT)"
+      :key="evolution.id"
+    >
       <div class="d-flex flex-column justify-center align-center">
         <v-icon icon="mdi-chevron-right" size="x-large" />
         <h5 class="text-center">{{ evolution.condition }}</h5>
@@ -21,6 +30,7 @@
 import { type IPokemon } from '@/core/interfaces/pokemon.interface';
 import { type PropType } from 'vue';
 import PokemonEvolutionItem from './PokemonEvolutionItem.vue';
+import { EvolutionType } from '@/core/constants';
 
 const props = defineProps({
   pokemon: { type: Object as PropType<IPokemon>, required: true },

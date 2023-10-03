@@ -58,10 +58,11 @@ model Ability {
 }
 
 model Evolution {
-   id                   Int     @id @default(autoincrement())
+   id                   Int           @id @default(autoincrement())
    condition            String?
    pokemon_id           Int
    pokemon_evolution_id Int
+   type                 EvolutionType @default(PRE)
 
    pokemon           Pokemon @relation(name: "pokemon_evolution", fields: [pokemon_id], references: [id])
    pokemon_evolution Pokemon @relation(name: "pokemon_evolution_1", fields: [pokemon_evolution_id], references: [id])
@@ -127,4 +128,9 @@ model AbilityToPokemon {
    pokemon Pokemon @relation(fields: [pokemon_id], references: [id])
 
    @@id([pokemon_id, ability_id])
+}
+
+enum EvolutionType {
+   PRE
+   NEXT
 }

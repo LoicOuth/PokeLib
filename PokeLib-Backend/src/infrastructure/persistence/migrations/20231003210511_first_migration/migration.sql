@@ -6,6 +6,7 @@ CREATE TABLE `User` (
     `password` VARCHAR(191) NULL,
     `avatar` VARCHAR(191) NOT NULL,
     `role` ENUM('ADMIN', 'USER') NOT NULL DEFAULT 'USER',
+    `pseudo_is_edited` BOOLEAN NOT NULL DEFAULT false,
     `google_uuid` VARCHAR(191) NULL,
     `registered_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
@@ -55,6 +56,7 @@ CREATE TABLE `Evolution` (
     `condition` VARCHAR(191) NULL,
     `pokemon_id` INTEGER NOT NULL,
     `pokemon_evolution_id` INTEGER NOT NULL,
+    `type` ENUM('PRE', 'NEXT') NOT NULL DEFAULT 'PRE',
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
